@@ -4,29 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:tuc2"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="300" Width="425">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition Height="50"/>
-        </Grid.RowDefinitions>
-        <ListBox x:Name="UsersList" ItemsSource="{Binding}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel>
-                        <TextBlock Text="{Binding Login}" FontSize="16"/>
-                        <TextBlock Text="{Binding Password}" FontSize="12"/>
-                        <TextBlock Text="{Binding FirstName}" FontSize="13"/>
-                        <TextBlock Text="{Binding LastName}" FontSize="13"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Content="Добавить" Margin="10" Click="Add_Click"/>
-            <Button Content="Изменить" Margin="10" Click="Edit_Click" />
-            <Button Content="Удалить" Margin="10" Click="Delete_Click" />
-        </StackPanel>
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d" Height="450" Width="750"
+        Foreground="White"
+        WindowStartupLocation="CenterScreen"
+        MinHeight="475" MinWidth="750"
+        Title="TUC2 (The User's Code Checker)">
+    <Grid x:Name="gridMainWindow" Background="#7986CB">
+
     </Grid>
 </Window>
