@@ -11,6 +11,7 @@
         MinHeight="475" MinWidth="750"
         Title="TUC2 (The User's Code Checker)">
     <Grid x:Name="gridMainWindow" Background="#7986CB">
+        <Button Content="Button" HorizontalAlignment="Left" Margin="252,175,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
 
     </Grid>
 </Window>

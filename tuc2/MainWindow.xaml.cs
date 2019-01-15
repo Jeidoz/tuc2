@@ -29,5 +29,19 @@ namespace tuc2
 
             dbContext = new ApplicationContext();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var newUser = new User
+            {
+                Login = "user",
+                Password = "0951431404",
+                FirstName = "Name1",
+                LastName = "Surname1"
+            };
+            dbContext.Users.Add(newUser);
+            dbContext.SaveChanges();
+            var users = dbContext.Users.ToList();
+        }
     }
 }
