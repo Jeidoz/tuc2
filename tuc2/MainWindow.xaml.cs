@@ -32,12 +32,14 @@ namespace tuc2
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            var adminRole = dbContext.Roles.First();
             var newUser = new User
             {
                 Login = "user",
                 Password = "0951431404",
                 FirstName = "Name1",
-                LastName = "Surname1"
+                LastName = "Surname1",
+                Role = adminRole
             };
             dbContext.Users.Add(newUser);
             dbContext.SaveChanges();

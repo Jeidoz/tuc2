@@ -85,7 +85,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ApplicationContext.cs" />
+    <Compile Include="Entities\Media.cs" />
     <Compile Include="Entities\Role.cs" />
+    <Compile Include="Entities\SampleData.cs" />
+    <Compile Include="Entities\TestTask.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -96,6 +99,10 @@
     <Compile Include="Migrations\201901151822538_Added User and Role tables.cs" />
     <Compile Include="Migrations\201901151822538_Added User and Role tables.Designer.cs">
       <DependentUpon>201901151822538_Added User and Role tables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201901151924267_Added Task, SampleData and Media tables.cs" />
+    <Compile Include="Migrations\201901151924267_Added Task, SampleData and Media tables.Designer.cs">
+      <DependentUpon>201901151924267_Added Task, SampleData and Media tables.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -113,6 +120,9 @@
     </Compile>
     <EmbeddedResource Include="Migrations\201901151822538_Added User and Role tables.resx">
       <DependentUpon>201901151822538_Added User and Role tables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901151924267_Added Task, SampleData and Media tables.resx">
+      <DependentUpon>201901151924267_Added Task, SampleData and Media tables.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
