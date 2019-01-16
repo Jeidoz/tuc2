@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using tuc2.Entities;
+using tuc2.Windows;
 
 namespace tuc2
 {
@@ -22,28 +23,34 @@ namespace tuc2
     /// </summary>
     public partial class MainWindow : Window
     {
-        ApplicationContext dbContext;
+        AuthorizeWnd loginWnd;
         public MainWindow()
         {
             InitializeComponent();
-
-            dbContext = new ApplicationContext();
+            loginWnd = new AuthorizeWnd();
+            gridMainWindow.Children.Add(loginWnd);
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        public void ShowLoginWindow()
         {
-            var adminRole = dbContext.Roles.First();
-            var newUser = new User
+            gridMainWindow.Children.Clear();
+            loginWnd = new AuthorizeWnd();
+            gridMainWindow.Children.Add(loginWnd);
+        }
+
+        public void HideLoginWindow(UserRoles userRole)
+        {
+            gridMainWindow.Children.Remove(loginWnd);
+            if (userRole == UserRoles.User)
             {
-                Login = "user",
-                Password = "0951431404",
-                FirstName = "Name1",
-                LastName = "Surname1",
-                Role = adminRole
-            };
-            dbContext.Users.Add(newUser);
-            dbContext.SaveChanges();
-            var users = dbContext.Users.ToList();
+                var userInterface = new UserMenuWnd();
+                this.gridMainWindow.Children.Add(userInterface);
+            }
+            else
+            {
+                var userInterface = new AdminMenuWnd();
+                this.gridMainWindow.Children.Add(userInterface);
+            }
         }
     }
 }
