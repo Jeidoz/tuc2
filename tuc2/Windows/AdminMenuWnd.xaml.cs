@@ -24,5 +24,35 @@ namespace tuc2.Windows
         {
             InitializeComponent();
         }
+
+        private void ButtonOpenMenu_Click(object sender, RoutedEventArgs e)
+        {
+            ButtonCloseMenu.Visibility = Visibility.Visible;
+            ButtonOpenMenu.Visibility = Visibility.Collapsed;
+        }
+
+        private void ButtonCloseMenu_Click(object sender, RoutedEventArgs e)
+        {
+            ButtonCloseMenu.Visibility = Visibility.Collapsed;
+            ButtonOpenMenu.Visibility = Visibility.Visible;
+        }
+
+        private void ListViewMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UserControl usc = null;
+            GridMain.Children.Clear();
+            ListViewItem item = ((ListView)sender).SelectedItem as ListViewItem;
+
+            switch (item.Name)
+            {
+                case "ItemLogout":
+                    MainWindow wnd = (MainWindow)Window.GetWindow(this);
+                    wnd.ShowLoginWindow();
+                    break;
+                
+                default:
+                    break;
+            }
+        }
     }
 }
