@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using tuc2.Windows.AdminControls;
 
 namespace tuc2.Windows
 {
@@ -49,7 +50,10 @@ namespace tuc2.Windows
                     MainWindow wnd = (MainWindow)Window.GetWindow(this);
                     wnd.ShowLoginWindow();
                     break;
-                
+                case "ItemUsers":
+                    usc = new UsersCrudWnd();
+                    GridMain.Children.Add(usc);
+                    break;
                 default:
                     break;
             }

@@ -77,6 +77,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Enums.cs" />
+    <Compile Include="Windows\AdminControls\UsersCrudWnd.xaml.cs">
+      <DependentUpon>UsersCrudWnd.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\AdminMenuWnd.xaml.cs">
       <DependentUpon>AdminMenuWnd.xaml</DependentUpon>
     </Compile>
@@ -104,6 +107,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Windows\AdminControls\UsersCrudWnd.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\AdminMenuWnd.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -10,5 +10,5 @@
         WindowStartupLocation="CenterScreen"
         MinHeight="475" MinWidth="750"
         Title="TUC2 (The User's Code Checker)">
-    <Grid x:Name="gridMainWindow" Background="#E1F5FE"/>
+    <Grid x:Name="gridMainWindow" Background="White"/>
 </Window>

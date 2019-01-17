@@ -1,0 +1,99 @@
+﻿<UserControl x:Class="tuc2.Windows.AdminControls.UsersCrudWnd"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:tuc2.Windows.AdminControls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="100px" Width="1*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45px"/>
+            <RowDefinition/>
+            <RowDefinition Height="65px"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Список користувачів" Grid.Row="0" Grid.Column="0"
+                   Style="{StaticResource MaterialDesignHeadlineTextBlock}"
+                   TextWrapping="Wrap" Foreground="Black" FontSize="22px"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Text="Інформація про виділеного користувача" Grid.Row="0" Grid.Column="1"
+                   Style="{StaticResource MaterialDesignHeadlineTextBlock}"
+                   TextWrapping="Wrap" Foreground="Black" FontSize="22px"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+        <ListView x:Name="ListViewUsers"
+                  Grid.Row="1" Grid.Column="0"
+                  Margin="5"/>
+        <Button x:Name="BtnAddNewUser" Content="Додати"
+                Grid.Row="2" Grid.Column="0"
+                FontSize="18px" FontWeight="SemiBold"
+                MinHeight="45px" Margin="10"
+                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+        <DockPanel Grid.Row="1" Grid.Column="1">
+            <ScrollViewer IsTabStop="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <StackPanel>
+                    <TextBox x:Name="txtUsername" 
+                             DockPanel.Dock="Top"
+                             Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
+                             Margin="10, 7, 10, 0"
+                             FontSize="18" Foreground="Black"
+                             materialDesign:HintAssist.Hint="Ім'я користувача (логін)"/>
+                    <TextBox x:Name="txtPassword" 
+                             DockPanel.Dock="Top"
+                             Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
+                             Margin="10, 7, 10, 0"
+                             FontSize="18" Foreground="Black"
+                             materialDesign:HintAssist.Hint="Пароль"/>
+                    <ComboBox x:Name="cmbRole"
+                              DockPanel.Dock="Top"
+                              Margin="30, 7, 30, 0" Foreground="Black"
+                              Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                              materialDesign:HintAssist.Hint="Роль користувача">
+                        <ComboBoxItem>
+                            Адміністратор
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            Студент
+                        </ComboBoxItem>
+                    </ComboBox>
+                    <TextBox x:Name="txtFirstName" 
+                             DockPanel.Dock="Top"
+                             Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
+                             Margin="10, 7, 10, 0"
+                             FontSize="18" Foreground="Black"
+                             materialDesign:HintAssist.Hint="Ім'я"/>
+                    <TextBox x:Name="txtLastName" 
+                             DockPanel.Dock="Top"
+                             Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
+                             Margin="10, 7, 10, 7"
+                             FontSize="18" Foreground="Black"
+                             materialDesign:HintAssist.Hint="Прізвище"/>
+                </StackPanel>
+            </ScrollViewer>
+        </DockPanel>
+
+        <Grid Grid.Row="2" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="BtnSave" Content="Зберегти"
+                    Grid.Column="0"
+                    FontSize="18px" FontWeight="SemiBold"
+                    MinHeight="45px" Margin="10"
+                    HorizontalAlignment="Stretch"/>
+            <Button x:Name="BtnRemove" Content="Видалити"
+                    Grid.Column="1" 
+                    FontSize="18px" FontWeight="SemiBold"
+                    MinHeight="45px" Margin="10"
+                    HorizontalAlignment="Stretch"/>
+        </Grid>
+    </Grid>
+</UserControl>

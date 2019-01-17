@@ -14,11 +14,6 @@
                 <EasingDoubleKeyFrame KeyTime="0" Value="70"/>
                 <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="200"/>
             </DoubleAnimationUsingKeyFrames>
-            <!--<ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="Margin"
-                                              Storyboard.TargetName="GridMain">
-                <SplineThicknessKeyFrame KeyTime="0:0:0" Value="70, 0, 0, 0" />
-                <SplineThicknessKeyFrame KeyTime="0:0:0.25" Value="200, 0, 0, 0" />
-            </ThicknessAnimationUsingKeyFrames>-->
         </Storyboard>
         <Storyboard x:Key="CloseMenu">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)"
