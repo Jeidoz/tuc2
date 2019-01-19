@@ -111,6 +111,7 @@ namespace tuc2.Windows.AdminControls
                 context.Users.Add(newUser);
                 context.SaveChanges();
                 usersList.Add(newUser.Login);
+                isNewUser = false;
             }
             else
             {
