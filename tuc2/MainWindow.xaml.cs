@@ -38,7 +38,7 @@ namespace tuc2
             gridMainWindow.Children.Add(loginWnd);
         }
 
-        public void HideLoginWindow(UserRoles userRole)
+        public void HideLoginWindow(UserRoles userRole, User loginedUser)
         {
             gridMainWindow.Children.Remove(loginWnd);
             if (userRole == UserRoles.User)
@@ -48,7 +48,7 @@ namespace tuc2
             }
             else
             {
-                var userInterface = new AdminMenuWnd();
+                var userInterface = new AdminMenuWnd(loginedUser);
                 this.gridMainWindow.Children.Add(userInterface);
             }
         }

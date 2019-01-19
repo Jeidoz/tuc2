@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -53,6 +54,7 @@ namespace tuc2.Entities
             }
         }
         
+        [Required]
         public virtual Role Role { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;

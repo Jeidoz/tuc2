@@ -48,7 +48,7 @@ namespace tuc2.Windows
                 return;
             }
             MainWindow mainWindow = (MainWindow)Window.GetWindow(this);
-            mainWindow.HideLoginWindow(authUserRole);
+            mainWindow.HideLoginWindow(authUserRole, user);
         }
 
         private void BtnClose_Click(object sender, RoutedEventArgs e)

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using tuc2.Entities;
 using tuc2.Windows.AdminControls;
 
 namespace tuc2.Windows
@@ -21,9 +22,12 @@ namespace tuc2.Windows
     /// </summary>
     public partial class AdminMenuWnd : UserControl
     {
-        public AdminMenuWnd()
+        public User LoginedUser { get; set; }
+
+        public AdminMenuWnd(User loginedUser)
         {
             InitializeComponent();
+            LoginedUser = loginedUser;
         }
 
         private void ButtonOpenMenu_Click(object sender, RoutedEventArgs e)
@@ -51,7 +55,7 @@ namespace tuc2.Windows
                     wnd.ShowLoginWindow();
                     break;
                 case "ItemUsers":
-                    usc = new UsersCrudWnd();
+                    usc = new UsersCrudWnd(LoginedUser);
                     GridMain.Children.Add(usc);
                     break;
                 default:

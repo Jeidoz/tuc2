@@ -77,6 +77,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Enums.cs" />
+    <Compile Include="Migrations\201901171049589_Set require attribute to role in Users table.cs" />
+    <Compile Include="Migrations\201901171049589_Set require attribute to role in Users table.Designer.cs">
+      <DependentUpon>201901171049589_Set require attribute to role in Users table.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\AdminControls\UsersCrudWnd.xaml.cs">
       <DependentUpon>UsersCrudWnd.xaml</DependentUpon>
     </Compile>
@@ -152,6 +156,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201901151924267_Added Task, SampleData and Media tables.resx">
       <DependentUpon>201901151924267_Added Task, SampleData and Media tables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901171049589_Set require attribute to role in Users table.resx">
+      <DependentUpon>201901171049589_Set require attribute to role in Users table.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

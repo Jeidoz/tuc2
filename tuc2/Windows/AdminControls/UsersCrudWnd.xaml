@@ -29,12 +29,15 @@
 
         <ListView x:Name="ListViewUsers"
                   Grid.Row="1" Grid.Column="0"
-                  Margin="5"/>
+                  Margin="5"
+                  SelectedIndex="{Binding Path=SelectedIndexValue}"
+                  SelectionChanged="ListViewUsers_SelectionChanged"/>
         <Button x:Name="BtnAddNewUser" Content="Додати"
                 Grid.Row="2" Grid.Column="0"
                 FontSize="18px" FontWeight="SemiBold"
                 MinHeight="45px" Margin="10"
-                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                Click="BtnAddNewUser_Click"/>
 
         <DockPanel Grid.Row="1" Grid.Column="1">
             <ScrollViewer IsTabStop="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
@@ -88,12 +91,14 @@
                     Grid.Column="0"
                     FontSize="18px" FontWeight="SemiBold"
                     MinHeight="45px" Margin="10"
-                    HorizontalAlignment="Stretch"/>
+                    HorizontalAlignment="Stretch"
+                    Click="BtnSave_Click"/>
             <Button x:Name="BtnRemove" Content="Видалити"
                     Grid.Column="1" 
                     FontSize="18px" FontWeight="SemiBold"
                     MinHeight="45px" Margin="10"
-                    HorizontalAlignment="Stretch"/>
+                    HorizontalAlignment="Stretch"
+                    Click="BtnRemove_Click"/>
         </Grid>
     </Grid>
 </UserControl>
