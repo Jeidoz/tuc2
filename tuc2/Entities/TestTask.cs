@@ -14,8 +14,8 @@ namespace tuc2.Entities
         public string InputFile { get; set; }
         public string OutputFile { get; set; }
 
-        public virtual SampleData InputExample { get; set; }
-        public virtual SampleData OutputExample { get; set; }
+        public string InputExample { get; set; }
+        public string OutputExample { get; set; }
         public virtual List<Media> Medias { get; set; }
     }
 }

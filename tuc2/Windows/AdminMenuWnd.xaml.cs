@@ -58,6 +58,10 @@ namespace tuc2.Windows
                     usc = new UsersCrudWnd(LoginedUser);
                     GridMain.Children.Add(usc);
                     break;
+                case "ItemTasks":
+                    usc = new TasksCrudWnd();
+                    GridMain.Children.Add(usc);
+                    break;
                 default:
                     break;
             }

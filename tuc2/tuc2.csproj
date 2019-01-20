@@ -81,6 +81,13 @@
     <Compile Include="Migrations\201901171049589_Set require attribute to role in Users table.Designer.cs">
       <DependentUpon>201901171049589_Set require attribute to role in Users table.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201901201733145_Simplified input and output examples in TestTasks table.cs" />
+    <Compile Include="Migrations\201901201733145_Simplified input and output examples in TestTasks table.Designer.cs">
+      <DependentUpon>201901201733145_Simplified input and output examples in TestTasks table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\AdminControls\TasksCrudWnd.xaml.cs">
+      <DependentUpon>TasksCrudWnd.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\AdminControls\UsersCrudWnd.xaml.cs">
       <DependentUpon>UsersCrudWnd.xaml</DependentUpon>
     </Compile>
@@ -111,6 +118,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Windows\AdminControls\TasksCrudWnd.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\AdminControls\UsersCrudWnd.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -159,6 +170,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201901171049589_Set require attribute to role in Users table.resx">
       <DependentUpon>201901171049589_Set require attribute to role in Users table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901201733145_Simplified input and output examples in TestTasks table.resx">
+      <DependentUpon>201901201733145_Simplified input and output examples in TestTasks table.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
