@@ -1,0 +1,166 @@
+﻿<UserControl x:Class="tuc2.Windows.UserControls.TaskSolverWnd"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:tuc2.Windows.UserControls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="100px" Width="1*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45px"/>
+            <RowDefinition/>
+            <RowDefinition Height="120px"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Список завдань" Grid.Row="0" Grid.Column="0"
+                   Style="{StaticResource MaterialDesignHeadlineTextBlock}"
+                   TextWrapping="Wrap" Foreground="Black" FontSize="22px"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Text="Інформація про виділене завдання" Grid.Row="0" Grid.Column="1"
+                   Style="{StaticResource MaterialDesignHeadlineTextBlock}"
+                   TextWrapping="Wrap" Foreground="Black" FontSize="22px"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+        <ListView x:Name="ListViewTasks"
+                  Grid.Row="1" Grid.Column="0"
+                  Margin="5"
+                  SelectedIndex="{Binding Path=SelectedIndexValue}"
+                  SelectionChanged="ListViewTasks_SelectionChanged"/>
+
+        <DockPanel Grid.Row="1" Grid.Column="1">
+            <ScrollViewer IsTabStop="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <StackPanel>
+                    <TextBlock x:Name="lbTaskName" 
+                               DockPanel.Dock="Top"
+                               Style="{StaticResource MaterialDesignHeadlineTextBlock}"
+                               Margin="10, 7, 10, 0"
+                               HorizontalAlignment="Center"
+                               Foreground="Black"/>
+                    <TextBox x:Name="txtTaskDescription"
+                             DockPanel.Dock="Top"
+                             Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
+                             Margin="10, 7, 5, 0"
+                             MinHeight="140px"
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"
+                             IsReadOnly="True"
+                             FontSize="18" Foreground="Black"
+                             VerticalScrollBarVisibility="Auto"
+                             materialDesign:HintAssist.Hint="Опис завдання"/>
+                    <TextBlock Text="Приклади вводу і виводу програми"
+                               DockPanel.Dock="Top"
+                               Style="{StaticResource MaterialDesignSubheadingTextBlock}"
+                               Margin="10, 7, 5, 0"
+                               HorizontalAlignment="Center"
+                               Foreground="Black" FontWeight="SemiBold"
+                               FontSize="16px"/>
+                    <Grid Margin="0, 7, 0, 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <TextBox x:Name="txtInputSample" 
+                                 Grid.Column="0" Grid.Row="0"
+                                 Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
+                                 Margin="5, 7, 5, 0"
+                                 Height="140px"
+                                 AcceptsReturn="True"
+                                 IsReadOnly="True"
+                                 FontSize="16" Foreground="Black"
+                                 materialDesign:HintAssist.Hint="Приклади вхідних даних"/>
+                        <TextBox x:Name="txtOutputSample" 
+                                 Grid.Column="1" Grid.Row="0"
+                                 Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
+                                 Margin="5, 7, 5, 0"
+                                 Height="140px"
+                                 AcceptsReturn="True"
+                                 IsReadOnly="True"
+                                 FontSize="16" Foreground="Black"
+                                 materialDesign:HintAssist.Hint="Приклади вихідних даних"/>
+                        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="txtCodeFile"
+                                     Grid.Column="0"
+                                     Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
+                                     IsReadOnly="True"
+                                     Margin="5, 7, 5, 0"
+                                     FontSize="16" Foreground="Black"
+                                     materialDesign:HintAssist.Hint="Файл із кодом програми"/>
+                            <Button x:Name="btnSelectCodeFile" 
+                                    Margin="3, 7, 3, 0"
+                                    Grid.Column="1"
+                                    Height="60px"
+                                    FontSize="16"
+                                    Click="BtnSelectCodeFile_Click">
+                                <TextBlock TextWrapping="Wrap" Text="Вибрати файл"
+                                           FontSize="14px"/>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </DockPanel>
+
+        <Grid Grid.Row="2" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Button x:Name="btnCheckSolution" Content="Перевірити"
+                    Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0"
+                    FontSize="18px" FontWeight="SemiBold"
+                    MinHeight="45px" MinWidth="250px" 
+                    Margin="5, 7, 13, 5"
+                    IsEnabled="False"
+                    HorizontalAlignment="Center"
+                    Click="BtnCheckSolution_Click"/>
+            <Grid Grid.Row="1" Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="btnPreviusTask"
+                        Grid.Column="0"
+                        FontSize="18px" FontWeight="SemiBold"
+                        Margin="5,0"
+                        MinHeight="45px" Content="Назад"
+                        Click="BtnPreviusTask_Click"/>
+
+                <TextBlock x:Name="lbTaskNumber" Text="0 / 0"
+                           Grid.Column="1"
+                           Style="{StaticResource MaterialDesignSubheadingTextBlock}"
+                           Height="50px" Foreground="Black"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Margin="10, 10, 10, 0"
+                           FontSize="25px" FontWeight="SemiBold"
+                           materialDesign:HintAssist.Hint="№ завдання"/>
+
+                <Button x:Name="btnNextTask"
+                        Grid.Column="2"
+                        FontSize="18px" FontWeight="SemiBold"
+                        Margin="5,0"
+                        MinHeight="45px" Content="Вперед"
+                        Click="BtnNextTask_Click"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>
