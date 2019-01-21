@@ -43,7 +43,7 @@ namespace tuc2
             gridMainWindow.Children.Remove(loginWnd);
             if (userRole == UserRoles.User)
             {
-                var userInterface = new UserMenuWnd();
+                var userInterface = new UserMenuWnd(loginedUser);
                 this.gridMainWindow.Children.Add(userInterface);
             }
             else
