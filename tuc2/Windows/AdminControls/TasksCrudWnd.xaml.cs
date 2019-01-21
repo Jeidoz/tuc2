@@ -30,6 +30,10 @@ namespace tuc2.Windows.AdminControls
 
         public int SelectedIndexValue { get; set; }
 
+
+        // TO DO
+        // Зробити можливість створення тестувальних файлів
+        // (кнопка яка вікдриває створення файлу і зберігає його за певною схемою)
         public TasksCrudWnd()
         {
             context = new ApplicationContext();
@@ -56,7 +60,10 @@ namespace tuc2.Windows.AdminControls
 
         private void ListViewTasks_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var taskName = taskList[this.ListViewTasks.SelectedIndex];
+            SelectedIndexValue = this.ListViewTasks.SelectedIndex;
+            if (SelectedIndexValue == -1)
+                SelectedIndexValue = 0;
+            var taskName = taskList[SelectedIndexValue];
             var task = context.Tasks.SingleOrDefault(t => t.Name == taskName);
             FillOrClearFields(task.Name, task.Description, task.InputExample, task.OutputExample, task.InputFile, task.OutputFile);
         }
@@ -109,7 +116,7 @@ namespace tuc2.Windows.AdminControls
 
             var newTask = new TestTask()
             {
-                Name = this.txtTaskDescription.Text,
+                Name = this.txtTaskName.Text,
                 Description = this.txtTaskDescription.Text,
                 InputExample = this.txtInputSample.Text,
                 OutputExample = this.txtOutputSample.Text,
@@ -147,11 +154,13 @@ namespace tuc2.Windows.AdminControls
                 selectedTask.OutputFile = newTask.OutputFile;
 
                 context.SaveChanges();
+                taskList[selectedTaskIndex] = selectedTask.Name;
+                SelectedIndexValue = selectedTaskIndex;
             }
 
             var index = taskList.IndexOf(newTask.Name);
             this.ListViewTasks.SelectedIndex = index;
-            var messageText = $"Завдання із іменем {newTask.Name} було успішно збережене у базу даних";
+            var messageText = $"Завдання із іменем {taskList[SelectedIndexValue]} було успішно збережене у базу даних";
             var messageHeader = "Успішне збереження завдання";
             MessageBox.Show(messageText, messageHeader, MessageBoxButton.OK, MessageBoxImage.Information);
         }

@@ -46,7 +46,10 @@ namespace tuc2.Windows.AdminControls
 
         private void ListViewUsers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var userLogin = usersList[this.ListViewUsers.SelectedIndex];
+            SelectedIndexValue = this.ListViewUsers.SelectedIndex;
+            if (SelectedIndexValue == -1)
+                SelectedIndexValue = 0;
+            var userLogin = usersList[SelectedIndexValue];
             var userInfo = context.Users.Include(u => u.Role).SingleOrDefault(user => user.Login == userLogin);
             FillOrClearFields(userInfo.Login, userInfo.Password, userInfo.FirstName, userInfo.LastName, userInfo.Role.Id == RolesInfo.AdminId ? 0 : 1);
         }
@@ -112,6 +115,7 @@ namespace tuc2.Windows.AdminControls
                 context.SaveChanges();
                 usersList.Add(newUser.Login);
                 isNewUser = false;
+                SelectedIndexValue = usersList.IndexOf(newUser.Login);
             }
             else
             {
@@ -128,11 +132,12 @@ namespace tuc2.Windows.AdminControls
                 selectedUser.Role = newUser.Role;
 
                 context.SaveChanges();
+                usersList[selectedUserIndex] = selectedUser.Login;
+                SelectedIndexValue = selectedUserIndex;
             }
             
-            var index = usersList.IndexOf(newUser.Login);
-            this.ListViewUsers.SelectedIndex = index;
-            var messageText = $"Користувач із іменем {newUser.Login} був успішно збережений у базу даних";
+            this.ListViewUsers.SelectedIndex = SelectedIndexValue;
+            var messageText = $"Користувач із іменем {usersList[SelectedIndexValue]} був успішно збережений у базу даних";
             var messageHeader = "Успішне збереження користувача";
             MessageBox.Show(messageText, messageHeader, MessageBoxButton.OK, MessageBoxImage.Information);
         }
