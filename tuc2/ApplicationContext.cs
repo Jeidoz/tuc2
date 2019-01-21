@@ -19,5 +19,6 @@ namespace tuc2
         public DbSet<Role> Roles { get; set; }
         public DbSet<TestTask> Tasks{ get; set; }
         public DbSet<Media> Medias { get; set; }
+        public DbSet<Test> Tests { get; set; } 
     }
 }
