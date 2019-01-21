@@ -91,53 +91,11 @@
                                  AcceptsReturn="True"
                                  FontSize="16" Foreground="Black"
                                  materialDesign:HintAssist.Hint="Приклади вихідних даних"/>
-                        <Grid Grid.Column="0" Grid.Row="1"
-                              Margin="0, 7, 0, 0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*"/>
-                                <ColumnDefinition Width="1*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox x:Name="txtInputTestFile"
-                                     Grid.Column="0"
-                                     Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
-                                     IsReadOnly="True"
-                                     FontSize="16" Foreground="Black"
-                                     Margin="5, 7, 5, 0"
-                                     materialDesign:HintAssist.Hint="Тестовий файл вхідних даних"/>
-                            <Button x:Name="btnSelectInputTestFile" 
-                                    Margin="3, 7, 3, 0"
-                                    Grid.Column="1"
-                                    Height="60px"
-                                    FontSize="16"
-                                    Click="BtnSelectInputTestFile_Click">
-                                <TextBlock TextWrapping="Wrap" Text="Вибрати файл"
-                                           FontSize="14px"/>
-                            </Button>
-                        </Grid>
-
-                        <Grid Grid.Column="1" Grid.Row="1"
-                              Margin="0, 7, 0, 0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*"/>
-                                <ColumnDefinition Width="1*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox x:Name="txtOutputTestFile"
-                                     Grid.Column="0"
-                                     Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
-                                     IsReadOnly="True"
-                                     Margin="5, 7, 5, 0"
-                                     FontSize="16" Foreground="Black"
-                                     materialDesign:HintAssist.Hint="Тестовий файл вихідних даних"/>
-                            <Button x:Name="btnSelectOutputTestFile" 
-                                    Margin="3, 7, 3, 0"
-                                    Grid.Column="1"
-                                    Height="60px"
-                                    FontSize="16"
-                                    Click="BtnSelectOutputTestFile_Click">
-                                <TextBlock TextWrapping="Wrap" Text="Вибрати файл"
-                                           FontSize="14px"/>
-                            </Button>
-                        </Grid>
+                        <Button x:Name="BtnEditTests" Content="Редагувати тести"
+                                Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                Height="45px" Margin="5, 10"
+                                FontSize="22px"
+                                Click="BtnEditTests_Click"/>
                     </Grid>
                 </StackPanel>
             </ScrollViewer>

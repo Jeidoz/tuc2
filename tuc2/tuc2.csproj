@@ -76,6 +76,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Entities\Test.cs" />
+    <Compile Include="Entities\TestViewModel.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Migrations\201901171049589_Set require attribute to role in Users table.cs" />
     <Compile Include="Migrations\201901171049589_Set require attribute to role in Users table.Designer.cs">
@@ -85,8 +87,19 @@
     <Compile Include="Migrations\201901201733145_Simplified input and output examples in TestTasks table.Designer.cs">
       <DependentUpon>201901201733145_Simplified input and output examples in TestTasks table.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201901210945047_Added tests table and modified relationships.cs" />
+    <Compile Include="Migrations\201901210945047_Added tests table and modified relationships.Designer.cs">
+      <DependentUpon>201901210945047_Added tests table and modified relationships.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201901211024281_Removed unuseable column from test table.cs" />
+    <Compile Include="Migrations\201901211024281_Removed unuseable column from test table.Designer.cs">
+      <DependentUpon>201901211024281_Removed unuseable column from test table.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\AdminControls\TasksCrudWnd.xaml.cs">
       <DependentUpon>TasksCrudWnd.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\AdminControls\TestCrudWnd.xaml.cs">
+      <DependentUpon>TestCrudWnd.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\AdminControls\UsersCrudWnd.xaml.cs">
       <DependentUpon>UsersCrudWnd.xaml</DependentUpon>
@@ -96,6 +109,9 @@
     </Compile>
     <Compile Include="Windows\AuthorizeWnd.xaml.cs">
       <DependentUpon>AuthorizeWnd.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\UserControls\TaskSolverWnd.xaml.cs">
+      <DependentUpon>TaskSolverWnd.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\UserMenuWnd.xaml.cs">
       <DependentUpon>UserMenuWnd.xaml</DependentUpon>
@@ -122,6 +138,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\AdminControls\TestCrudWnd.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\AdminControls\UsersCrudWnd.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -131,6 +151,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\AuthorizeWnd.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\UserControls\TaskSolverWnd.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -173,6 +197,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201901201733145_Simplified input and output examples in TestTasks table.resx">
       <DependentUpon>201901201733145_Simplified input and output examples in TestTasks table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901210945047_Added tests table and modified relationships.resx">
+      <DependentUpon>201901210945047_Added tests table and modified relationships.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901211024281_Removed unuseable column from test table.resx">
+      <DependentUpon>201901211024281_Removed unuseable column from test table.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -34,6 +34,10 @@ namespace tuc2.Windows.AdminControls
         // TO DO
         // Зробити можливість створення тестувальних файлів
         // (кнопка яка вікдриває створення файлу і зберігає його за певною схемою)
+        // забрати файли тестів і зберігати їх змішано в БД
+        // Замість кнопко вибору файлу, буде кнопка створення/редагування тесту
+        // в новому вікні з DataGrid-ом
+        // Перевірка на наявність доданих тестів
         public TasksCrudWnd()
         {
             context = new ApplicationContext();
@@ -54,8 +58,6 @@ namespace tuc2.Windows.AdminControls
             this.txtTaskDescription.Text = description;
             this.txtInputSample.Text = inputSample;
             this.txtOutputSample.Text = OutputSample;
-            this.txtInputTestFile.Text = inputTestFile;
-            this.txtOutputTestFile.Text = OutputTestFile;
         }
 
         private void ListViewTasks_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -65,7 +67,7 @@ namespace tuc2.Windows.AdminControls
                 SelectedIndexValue = 0;
             var taskName = taskList[SelectedIndexValue];
             var task = context.Tasks.SingleOrDefault(t => t.Name == taskName);
-            FillOrClearFields(task.Name, task.Description, task.InputExample, task.OutputExample, task.InputFile, task.OutputFile);
+            FillOrClearFields(task.Name, task.Description, task.InputExample, task.OutputExample/*, task.InputFile, task.OutputFile*/);
         }
 
         private void BtnAddNewTask_Click(object sender, RoutedEventArgs e)
@@ -85,10 +87,8 @@ namespace tuc2.Windows.AdminControls
             bool description = !string.IsNullOrWhiteSpace(this.txtTaskDescription.Text);
             bool inputSample = !string.IsNullOrWhiteSpace(this.txtInputSample.Text);
             bool outputSample = !string.IsNullOrWhiteSpace(this.txtOutputSample.Text);
-            bool inputFile = !string.IsNullOrWhiteSpace(this.txtInputTestFile.Text);
-            bool outputFile = !string.IsNullOrWhiteSpace(this.txtOutputTestFile.Text);
 
-            return (name && description && inputSample && outputSample && inputFile && outputFile);
+            return (name && description && inputSample && outputSample);
         }
 
         private void BtnRemove_Click(object sender, RoutedEventArgs e)
@@ -119,9 +119,7 @@ namespace tuc2.Windows.AdminControls
                 Name = this.txtTaskName.Text,
                 Description = this.txtTaskDescription.Text,
                 InputExample = this.txtInputSample.Text,
-                OutputExample = this.txtOutputSample.Text,
-                InputFile = this.txtInputTestFile.Text,
-                OutputFile = this.txtOutputTestFile.Text
+                OutputExample = this.txtOutputSample.Text
             };
 
             if (isNewTask)
@@ -150,8 +148,6 @@ namespace tuc2.Windows.AdminControls
                 selectedTask.Description = newTask.Description;
                 selectedTask.InputExample = newTask.InputExample;
                 selectedTask.OutputExample = newTask.OutputExample;
-                selectedTask.InputFile = newTask.InputFile;
-                selectedTask.OutputFile = newTask.OutputFile;
 
                 context.SaveChanges();
                 taskList[selectedTaskIndex] = selectedTask.Name;
@@ -165,30 +161,11 @@ namespace tuc2.Windows.AdminControls
             MessageBox.Show(messageText, messageHeader, MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        private void BtnSelectOutputTestFile_Click(object sender, RoutedEventArgs e)
+        private void BtnEditTests_Click(object sender, RoutedEventArgs e)
         {
-            var openFileDlg = new OpenFileDialog()
-            {
-                Multiselect = false,
-                Filter = "Text files|*.txt"
-            };
-            if(openFileDlg.ShowDialog() == true)
-            {
-                this.txtOutputTestFile.Text = openFileDlg.FileName;
-            }
-        }
-
-        private void BtnSelectInputTestFile_Click(object sender, RoutedEventArgs e)
-        {
-            var openFileDlg = new OpenFileDialog()
-            {
-                Multiselect = false,
-                Filter = "Text files|*.txt"
-            };
-            if (openFileDlg.ShowDialog() == true)
-            {
-                this.txtInputTestFile.Text = openFileDlg.FileName;
-            }
+            var testName = taskList[SelectedIndexValue];
+            var wnd = new TestCrudWnd(testName);
+            wnd.ShowDialog();
         }
     }
 }
