@@ -21,7 +21,7 @@
                   ItemsSource="{Binding TestsList, RelativeSource={RelativeSource AncestorType=Window}}"
                   CanUserSortColumns="True"
                   CanUserAddRows="True"/>-->
-        <DataGrid Margin="0 8 0 0"
+        <DataGrid x:Name="dataGridTest" Margin="0 8 0 0"
                   ItemsSource="{Binding TestsList, RelativeSource={RelativeSource AncestorType=Window}}"
                   CanUserSortColumns="True"
                   CanUserAddRows="True"
@@ -46,9 +46,9 @@
                 <DataGridTextColumn Binding="{Binding InputData}"
                                     Header="Вхідні дані"
                                     EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />
-                <materialDesign:MaterialDataGridTextColumn Binding="{Binding OutputData}"
-                                                           Header="Вихідні дані"
-                                                           EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
+                <DataGridTextColumn Binding="{Binding OutputData}"
+                                    Header="Вихідні дані"
+                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />
 
             </DataGrid.Columns>
         </DataGrid>
@@ -56,18 +56,25 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="BtnSaveTests" Content="Зберегти"
+            <Button x:Name="BtnSaveTests" Content="Зберегти і закрити"
                     Grid.Column="0"
-                    Margin="20, 5"
+                    Margin="10, 5"
                     Height="45"
-                    FontSize="22px"
+                    FontSize="20px"
                     Click="BtnSaveTests_Click"/>
-            <Button x:Name="BtnCancel" Content="Скасувати"
+            <Button x:Name="BtnRemove" Content="Видалити виділене"
                     Grid.Column="1"
-                    Margin="20, 5"
+                    Margin="10, 5"
                     Height="45"
-                    FontSize="22px"
+                    FontSize="20px"
+                    Click="BtnRemove_Click"/>
+            <Button x:Name="BtnCancel" Content="Скасувати"
+                    Grid.Column="2"
+                    Margin="10, 5"
+                    Height="45"
+                    FontSize="20px"
                     Click="BtnCancel_Click"/>
         </Grid>
     </Grid>
