@@ -50,7 +50,6 @@
                    Source="/Images/admin.png"/>
             <TextBox x:Name="txtUsername" 
                      Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
-                     Text="admin"
                      Grid.Column="1" Grid.Row="0"
                      VerticalAlignment="Center"
                      Margin="7, 3"
