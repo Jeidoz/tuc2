@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
+using tuc2.DataTypes;
 
 namespace tuc2.Windows.UserControls
 {
@@ -24,6 +26,7 @@ namespace tuc2.Windows.UserControls
     {
         private ApplicationContext context;
         private ObservableCollection<string> taskList;
+        private string currentDirectory;
 
         public int SelectedIndexValue { get; set; }
 
@@ -35,6 +38,7 @@ namespace tuc2.Windows.UserControls
                 SelectedIndexValue = -1;
             else
                 SelectedIndexValue = 0;
+            currentDirectory = Directory.GetCurrentDirectory();
 
             InitializeComponent();
 
@@ -50,7 +54,6 @@ namespace tuc2.Windows.UserControls
             this.txtOutputSample.Text = outputSample;
             this.txtCodeFile.Text = codeFile;
         }
-
         private void ListViewTasks_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SelectedIndexValue = this.ListViewTasks.SelectedIndex;
@@ -61,19 +64,16 @@ namespace tuc2.Windows.UserControls
             btnNextTask.IsEnabled = !(SelectedIndexValue + 1 == taskList.Count);
             btnPreviusTask.IsEnabled = !(SelectedIndexValue == 0);
         }
-
         private void BtnNextTask_Click(object sender, RoutedEventArgs e)
         {
             SelectedIndexValue++;
             this.ListViewTasks.SelectedIndex = SelectedIndexValue;
         }
-
         private void BtnPreviusTask_Click(object sender, RoutedEventArgs e)
         {
             SelectedIndexValue--;
             this.ListViewTasks.SelectedIndex = SelectedIndexValue;
         }
-
         private void BtnSelectCodeFile_Click(object sender, RoutedEventArgs e)
         {
             var openFileDlg = new OpenFileDialog
@@ -84,14 +84,33 @@ namespace tuc2.Windows.UserControls
             };
             if (openFileDlg.ShowDialog() == true)
             {
-                this.txtCodeFile.Text = openFileDlg.FileName;
+                var fileName = new FileInfo(openFileDlg.FileName);
+                var codesDir = Path.Combine(currentDirectory, "Codes");
+                var distPath = Path.Combine(codesDir, fileName.Name);
+                ClearCodeFilesFolder();
+                File.Copy(fileName.FullName, distPath);
+                this.txtCodeFile.Text = fileName.Name;
             }
             this.btnCheckSolution.IsEnabled = true;
         }
-
+        private void ClearCodeFilesFolder()
+        {
+            var dir = Path.Combine(currentDirectory, "Codes");
+            var dirInfo = new DirectoryInfo(dir);
+            foreach (FileInfo file in dirInfo.EnumerateFiles())
+            {
+                file.Delete();
+            }
+        }
         private void BtnCheckSolution_Click(object sender, RoutedEventArgs e)
         {
+            var taskName = taskList[SelectedIndexValue];
+            var task = context.Tasks.SingleOrDefault(t => t.Name == taskName);
+            if (task == null)
+                return;
 
+            var testingWnd = new TestingWnd(task.Id, this.txtCodeFile.Text);
+            testingWnd.ShowDialog();
         }
     }
 }
