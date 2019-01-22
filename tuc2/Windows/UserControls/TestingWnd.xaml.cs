@@ -203,18 +203,18 @@ namespace tuc2.Windows.UserControls
             var runtimeResult = Execute(test.InputData);
             return (runtimeResult.Output.StartsWith(test.OutputData));
         }
-        //private void ChangeRowColor(TestingAction action, Brush color)
-        //{
-        //    var dgItemsCount = ActionList.Count;
-        //    var lastRow = (DataGridRow)this.DataGridDetails.ItemContainerGenerator.ContainerFromIndex(dgItemsCount - 1);
-        //    if (lastRow == null)
-        //    {
-        //        this.DataGridDetails.UpdateLayout();
-        //        this.DataGridDetails.ScrollIntoView(this.DataGridDetails.Items[dgItemsCount - 1]);
-        //        lastRow = (DataGridRow)DataGridDetails.ItemContainerGenerator.ContainerFromIndex(dgItemsCount - 1);
-        //    }
-        //    lastRow.Foreground = color;
-        //}
+        private void ChangeRowColor(TestingAction action, Brush color)
+        {
+            var dgIndex = ActionList.Count - 1;
+            var lastRow = (DataGridRow)this.DataGridDetails.ItemContainerGenerator.ContainerFromIndex(dgIndex);
+            if (lastRow == null)
+            {
+                this.DataGridDetails.UpdateLayout();
+                this.DataGridDetails.ScrollIntoView(action);
+                lastRow = (DataGridRow)this.DataGridDetails.ItemContainerGenerator.ContainerFromIndex(dgIndex);
+            }
+            lastRow.Foreground = color;
+        }
         private void ProcessTesting()
         {
             TestingAction action;
@@ -225,23 +225,23 @@ namespace tuc2.Windows.UserControls
                 if (isTestPassed)
                 {
                     action = AddNewAction($"[Пройдений] Тест №{testNumber}");
-                    //ChangeRowColor(action, Brushes.DarkGreen);
+                    ChangeRowColor(action, Brushes.Green);
                     passedTests++;
                 }
                 else
                 {
                     action = AddNewAction($"[Провалений] Тест №{testNumber}");
-                    //ChangeRowColor(action, Brushes.MediumVioletRed);
+                    ChangeRowColor(action, Brushes.Red);
                     failedTests++;
                 }
                 testNumber++;
                 this.progressBarStatus.Value += multiplier;
             }
             action = AddNewAction($"Провалено {failedTests} із {tests.Count}");
-            //ChangeRowColor(action, (failedTests == 0 ? Brushes.DarkGreen : Brushes.MediumVioletRed));
+            ChangeRowColor(action, (failedTests == 0 ? Brushes.DarkGreen : Brushes.Red));
             action = AddNewAction($"Пройдено {passedTests} із {tests.Count}");
-            //ChangeRowColor(action, Brushes.DarkGreen);
-            this.DataGridDetails.ScrollIntoView(this.DataGridDetails.Items[ActionList.Count - 1]);
+            ChangeRowColor(action, Brushes.DarkGreen);
+            this.DataGridDetails.ScrollIntoView(action);
             this.progressBarStatus.Value = 100;
         }
 

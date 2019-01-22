@@ -32,7 +32,9 @@
                   CanUserAddRows="False"
                   CanUserReorderColumns="False"
                   CanUserDeleteRows="False"
-                  AutoGenerateColumns="False">
+                  AutoGenerateColumns="False"
+                  EnableRowVirtualization="False"
+                  FontWeight="SemiBold">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Action}"
                                     Header="Опис тестування"
