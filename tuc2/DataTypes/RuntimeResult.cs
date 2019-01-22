@@ -28,7 +28,7 @@ namespace tuc2.DataTypes
             else
             {
                 Errors = errors;
-                Output = null;
+                Output = output;
                 IsExecuted = false;
             }
         }
