@@ -14,13 +14,6 @@
             <RowDefinition/>
             <RowDefinition Height="60px"/>
         </Grid.RowDefinitions>
-
-        <!--<DataGrid x:Name="DataGridTests"
-                  Grid.Row="0"
-                  Margin="5"
-                  ItemsSource="{Binding TestsList, RelativeSource={RelativeSource AncestorType=Window}}"
-                  CanUserSortColumns="True"
-                  CanUserAddRows="True"/>-->
         <DataGrid x:Name="dataGridTest" Margin="0 8 0 0"
                   ItemsSource="{Binding TestsList, RelativeSource={RelativeSource AncestorType=Window}}"
                   CanUserSortColumns="True"
@@ -49,7 +42,6 @@
                 <DataGridTextColumn Binding="{Binding OutputData}"
                                     Header="Вихідні дані"
                                     EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />
-
             </DataGrid.Columns>
         </DataGrid>
         <Grid Grid.Row="1">
