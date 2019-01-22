@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Тестування рішення"
         MinHeight="325" MinWidth="450"
-        Height="475" Width="750" WindowStartupLocation="CenterOwner">
+        Height="475" Width="750" WindowStartupLocation="CenterOwner" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50px"/>

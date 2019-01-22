@@ -37,10 +37,16 @@ namespace tuc2.Windows.UserControls
                 Action = action;
             }
         }
+
         private ApplicationContext context;
         private TestTask task;
         private List<Test> tests;
         private FileInfo codeFileInfo;
+        private bool isCompiled;
+        private bool isTestRunPassed;
+        private int testNumber;
+        private int passedTests;
+        private int failedTests;
 
         public ObservableCollection<TestingAction> ActionList { get; set; }
 
@@ -63,16 +69,14 @@ namespace tuc2.Windows.UserControls
 
             DataContext = this;
             InitializeComponent();
-
-            progressBarStatus.Value = 5;
-
-            ProcessCompilation();
         }
-        private void AddNewAction(string action)
+
+        private TestingAction AddNewAction(string action)
         {
-            ActionList.Add(new TestingAction(action));
+            var newAction = new TestingAction(action);
+            ActionList.Add(newAction);
+            return newAction;
         }
-
         private void ProcessCompilation()
         {
             AddNewAction("Компіляція коду...");
@@ -81,15 +85,16 @@ namespace tuc2.Windows.UserControls
             {
                 progressBarStatus.Value = 10;
                 AddNewAction("Компіляція завершена.");
+                isCompiled = true;
             }
             else
             {
                 progressBarStatus.Foreground = Brushes.MediumVioletRed;
                 AddNewAction("Помилка компіляції!");
                 AddNewAction($"Дані про помилку:\n{compilationResult.Errors}");
+                isCompiled = false;
             }
         }
-
         private CompilationResult Compile()
         {
             string extension = codeFileInfo.Extension;
@@ -115,7 +120,7 @@ namespace tuc2.Windows.UserControls
             {
                 FileName = languageCompiler,
                 UseShellExecute = false,
-                CreateNoWindow = false,
+                CreateNoWindow = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true
             };
@@ -140,6 +145,123 @@ namespace tuc2.Windows.UserControls
                 errors = string.Empty;
             process.WaitForExit();
             return new CompilationResult(errors);
+        }
+        private RuntimeResult Execute(string input)
+        {
+            if (!isCompiled)
+            {
+                return new RuntimeResult(string.Empty, "Невдалося знайти виконуючий файл.");
+            }
+
+            var startInfo = new ProcessStartInfo
+            {
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                CreateNoWindow = true
+            };
+            if (codeFileInfo.Extension == ".py")
+            {
+                startInfo.FileName = "python";
+                startInfo.Arguments = codeFileInfo.FullName;
+            }
+            else
+            {
+                var exeFileName = codeFileInfo.FullName.Replace(codeFileInfo.Extension, ".exe");
+                startInfo.FileName = exeFileName;
+            }
+            var process = Process.Start(startInfo);
+            process.StandardInput.WriteLine(input);
+            var output = process.StandardOutput.ReadToEnd();
+            var errors = process.StandardError.ReadToEnd();
+            process.WaitForExit();
+        
+            return new RuntimeResult(output, errors);
+        }
+        private void ProcessTestRun()
+        {
+            AddNewAction("Пробний запуск виконуючого файлу..");
+            var runtimeResult = Execute(tests[0].InputData);
+            if (runtimeResult.IsExecuted)
+            {
+                progressBarStatus.Value = 20;
+                AddNewAction("Пробний запуск пройшов успішно.");
+                isTestRunPassed = true;
+            }
+            else
+            {
+                progressBarStatus.Foreground = Brushes.MediumVioletRed;
+                AddNewAction("Помилка виконання пробного запуску!");
+                AddNewAction($"Дані про помилку:\n{runtimeResult.Errors}");
+                isTestRunPassed = false;
+            }
+        }
+        private bool IsTestPassed(Test test)
+        {
+            AddNewAction($"Запуск тесту №{testNumber} із {tests.Count}");
+            var runtimeResult = Execute(test.InputData);
+            return (runtimeResult.Output.StartsWith(test.OutputData));
+        }
+        //private void ChangeRowColor(TestingAction action, Brush color)
+        //{
+        //    var dgItemsCount = ActionList.Count;
+        //    var lastRow = (DataGridRow)this.DataGridDetails.ItemContainerGenerator.ContainerFromIndex(dgItemsCount - 1);
+        //    if (lastRow == null)
+        //    {
+        //        this.DataGridDetails.UpdateLayout();
+        //        this.DataGridDetails.ScrollIntoView(this.DataGridDetails.Items[dgItemsCount - 1]);
+        //        lastRow = (DataGridRow)DataGridDetails.ItemContainerGenerator.ContainerFromIndex(dgItemsCount - 1);
+        //    }
+        //    lastRow.Foreground = color;
+        //}
+        private void ProcessTesting()
+        {
+            TestingAction action;
+            double multiplier = 80 / tests.Count;
+            foreach (var test in tests)
+            {
+                var isTestPassed = IsTestPassed(test);
+                if (isTestPassed)
+                {
+                    action = AddNewAction($"[Пройдений] Тест №{testNumber}");
+                    //ChangeRowColor(action, Brushes.DarkGreen);
+                    passedTests++;
+                }
+                else
+                {
+                    action = AddNewAction($"[Провалений] Тест №{testNumber}");
+                    //ChangeRowColor(action, Brushes.MediumVioletRed);
+                    failedTests++;
+                }
+                testNumber++;
+                this.progressBarStatus.Value += multiplier;
+            }
+            action = AddNewAction($"Провалено {failedTests} із {tests.Count}");
+            //ChangeRowColor(action, (failedTests == 0 ? Brushes.DarkGreen : Brushes.MediumVioletRed));
+            action = AddNewAction($"Пройдено {passedTests} із {tests.Count}");
+            //ChangeRowColor(action, Brushes.DarkGreen);
+            this.DataGridDetails.ScrollIntoView(this.DataGridDetails.Items[ActionList.Count - 1]);
+            this.progressBarStatus.Value = 100;
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            progressBarStatus.Value = 5;
+
+            ProcessCompilation();
+            if (isCompiled)
+            {
+                ProcessTestRun();
+                if (isTestRunPassed)
+                {
+                    AddNewAction("Запуск тестування...");
+                    testNumber = 1;
+                    failedTests = 0;
+                    passedTests = 0;
+                    ProcessTesting();
+                }
+            }
         }
     }
 }
