@@ -76,6 +76,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataTypes\CompilationResult.cs" />
+    <Compile Include="DataTypes\RuntimeResult.cs" />
+    <Compile Include="DataTypes\TestData.cs" />
     <Compile Include="Entities\Test.cs" />
     <Compile Include="Entities\TestViewModel.cs" />
     <Compile Include="Enums.cs" />
@@ -112,6 +115,9 @@
     </Compile>
     <Compile Include="Windows\UserControls\TaskSolverWnd.xaml.cs">
       <DependentUpon>TaskSolverWnd.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\UserControls\TestingWnd.xaml.cs">
+      <DependentUpon>TestingWnd.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\UserMenuWnd.xaml.cs">
       <DependentUpon>UserMenuWnd.xaml</DependentUpon>
@@ -155,6 +161,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\UserControls\TaskSolverWnd.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\UserControls\TestingWnd.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -217,7 +227,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Codes\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="database.sdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
