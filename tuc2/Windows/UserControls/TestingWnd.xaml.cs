@@ -64,7 +64,8 @@ namespace tuc2.Windows.UserControls
             {
                 new TestingAction("Ініціалізація змінних..."),
                 new TestingAction("Зчитування контрольних тестів..."),
-                new TestingAction($"Підготовка до тестування завдання із назвою \"{task.Name}\" завершена.")
+                new TestingAction($"Підготовка до тестування завдання із назвою \"{task.Name}\" завершена."),
+                new TestingAction("Компіляція коду...")
             };
 
             DataContext = this;
@@ -79,7 +80,7 @@ namespace tuc2.Windows.UserControls
         }
         private void ProcessCompilation()
         {
-            AddNewAction("Компіляція коду...");
+            
             var compilationResult = Compile();
             if (compilationResult.IsCompiled)
             {
@@ -245,7 +246,7 @@ namespace tuc2.Windows.UserControls
             this.progressBarStatus.Value = 100;
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private void Window_ContentRendered(object sender, EventArgs e)
         {
             progressBarStatus.Value = 5;
 
