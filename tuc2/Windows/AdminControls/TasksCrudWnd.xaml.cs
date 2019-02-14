@@ -32,11 +32,6 @@ namespace tuc2.Windows.AdminControls
 
 
         // TO DO
-        // Зробити можливість створення тестувальних файлів
-        // (кнопка яка вікдриває створення файлу і зберігає його за певною схемою)
-        // забрати файли тестів і зберігати їх змішано в БД
-        // Замість кнопко вибору файлу, буде кнопка створення/редагування тесту
-        // в новому вікні з DataGrid-ом
         // Перевірка на наявність доданих тестів
         public TasksCrudWnd()
         {
@@ -163,8 +158,19 @@ namespace tuc2.Windows.AdminControls
 
         private void BtnEditTests_Click(object sender, RoutedEventArgs e)
         {
-            var testName = taskList[SelectedIndexValue];
-            var wnd = new TestCrudWnd(testName);
+            var taskName = this.txtTaskName.Text;
+            if (string.IsNullOrWhiteSpace(taskName))
+            {
+                MessageBox.Show("Введіть спочатку назву тесту!", "Відсутня назва тесту", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+                return;
+            }
+            var isTaskExist = context.Tasks.Any(t => t.Name == taskName);
+            if (!isTaskExist)
+            {
+                MessageBox.Show("Збережіть завдання із початковими данними (Ім'я, Опис, Приклади тестів)", "Не створене завдання", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            var wnd = new TestCrudWnd(taskName);
             wnd.ShowDialog();
         }
     }
