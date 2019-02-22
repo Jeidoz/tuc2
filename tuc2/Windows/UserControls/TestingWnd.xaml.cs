@@ -134,7 +134,7 @@ namespace tuc2.Windows.UserControls
             }
             else
             {
-                startInfo.Arguments = fileName;
+                startInfo.Arguments = $"\"{fileName}\"";
             }
 
             var process = Process.Start(startInfo);
