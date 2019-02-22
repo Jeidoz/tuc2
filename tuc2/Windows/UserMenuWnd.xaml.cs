@@ -28,6 +28,14 @@ namespace tuc2.Windows
         {
             LoginedUser = user;
             InitializeComponent();
+            InitializeDefaultWindow();
+        }
+
+        private void InitializeDefaultWindow()
+        {
+            UserControl usc = new TaskSolverWnd();
+            GridMain.Children.Clear();
+            GridMain.Children.Add(usc);
         }
 
         private void ButtonOpenMenu_Click(object sender, RoutedEventArgs e)
