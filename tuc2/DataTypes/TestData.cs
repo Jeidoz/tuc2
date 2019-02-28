@@ -16,7 +16,6 @@ namespace tuc2.DataTypes
             Input = new List<string>();
             Output = string.Empty;
         }
-
         public TestData(string[] input, string output)
         {
             Input = input.ToList();
