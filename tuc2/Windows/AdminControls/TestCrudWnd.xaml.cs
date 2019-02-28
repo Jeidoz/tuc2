@@ -1,7 +1,7 @@
-﻿using System;
+﻿using LiteDB;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +13,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using tuc2.Entities;
+using tuc2.ViewModels;
+using Tuc2DDL;
+using Tuc2DDL.Entities;
 
 namespace tuc2.Windows.AdminControls
 {
@@ -22,7 +24,7 @@ namespace tuc2.Windows.AdminControls
     /// </summary>
     public partial class TestCrudWnd : Window
     {
-        private ApplicationContext context;
+        private DbContext db;
         private bool isAllItemsSelected;
         private string taskName;
 
@@ -43,19 +45,12 @@ namespace tuc2.Windows.AdminControls
         {
             DataContext = this;
             this.taskName = testName;
-            context = new ApplicationContext();
+            this.db = new DbContext();
             TestsList = new ObservableCollection<TestViewModel>();
-            var testTask = context.Tasks
-                .Include(t => t.Tests)
-                .SingleOrDefault(t => t.Name == testName);
+            var testTask = this.db.GetExercise(testName);
             foreach(var test in testTask.Tests)
             {
-                TestsList.Add(new TestViewModel()
-                {
-                    IsSelected = false,
-                    InputData = test.InputData,
-                    OutputData = test.OutputData
-                });
+                TestsList.Add(DataMapper.Map(test));
             }
 
             InitializeComponent();
@@ -71,21 +66,18 @@ namespace tuc2.Windows.AdminControls
 
         private void BtnSaveTests_Click(object sender, RoutedEventArgs e)
         {
-            var testTask = context.Tasks
-                .Include(t => t.Tests)
-                .SingleOrDefault(t => t.Name == taskName);
-            context.Tests.RemoveRange(testTask.Tests);
+            var testTask = this.db.GetExercise(taskName);
+            foreach (var test in testTask.Tests)
+            {
+                this.db.Tests.Delete(Query.EQ("Id", test.Id));
+            }
             List<Test> newTests = new List<Test>();
             foreach(var test in TestsList)
             {
-                newTests.Add(new Test()
-                {
-                    InputData = test.InputData,
-                    OutputData = test.OutputData
-                });
+                newTests.Add(DataMapper.Map(test));
             }
             testTask.Tests = newTests;
-            context.SaveChanges();
+            this.db.Exercises.Update(testTask);
 
             MessageBox.Show("Тести були успішно збережені у БД", "Тести успішно збережені", MessageBoxButton.OK, MessageBoxImage.Information);
             DialogResult = true;

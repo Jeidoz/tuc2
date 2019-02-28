@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using tuc2.Entities;
+using tuc2.ViewModels;
+using Tuc2DDL;
+using Tuc2DDL.Entities;
 
 namespace tuc2.Windows.AdminControls
 {
@@ -23,84 +24,95 @@ namespace tuc2.Windows.AdminControls
     /// </summary>
     public partial class UsersCrudWnd : UserControl
     {
-        private readonly ApplicationContext context;
+        private DbContext db;
         private ObservableCollection<string> usersList;
-        private User loginedUser;
+        private UserViewModel loginedUser;
         private bool isNewUser = false;
 
         public int SelectedIndexValue { get; set; }
 
-        public UsersCrudWnd(User usr)
+        public UsersCrudWnd(UserViewModel usr)
         {
-            context = new ApplicationContext();
+            db = new DbContext();
             loginedUser = usr;
-            usersList = new ObservableCollection<string>(context.Users.Select(user => user.Login));
+            var users = db.Users.FindAll();
+            usersList = new ObservableCollection<string>();
+            foreach(var user in users)
+            {
+                usersList.Add(user.Login);
+            }
             SelectedIndexValue = usersList.IndexOf(loginedUser.Login);
 
             DataContext = this;
 
             InitializeComponent();
             this.ListViewUsers.ItemsSource = usersList;
-            
         }
 
+        //TO-DO
+        //REPLACE "CHANGE PASSWORD" TO "make new password"
         private void ListViewUsers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SelectedIndexValue = this.ListViewUsers.SelectedIndex;
             if (SelectedIndexValue == -1)
                 SelectedIndexValue = 0;
             var userLogin = usersList[SelectedIndexValue];
-            var userInfo = context.Users.Include(u => u.Role).SingleOrDefault(user => user.Login == userLogin);
-            FillOrClearFields(userInfo.Login, userInfo.Password, userInfo.FirstName, userInfo.LastName, userInfo.Role.Id == RolesInfo.AdminId ? 0 : 1);
+            var selectedUser = db.GetUser(userLogin);
+            FillOrClearFields(selectedUser.Login,
+                null,
+                selectedUser.FirstName,
+                selectedUser.LastName,
+                selectedUser.Role.Type == "admin" ? RolesInfo.Admin : RolesInfo.User);
         }
-
-        private void FillOrClearFields(string login = "", string password = "", string firstName = "", string lastName = "", int roleId = -1)
+        private void FillOrClearFields(string login = "", string password = "", string firstName = "", string lastName = "", string roleType = RolesInfo.User)
         {
             this.txtUsername.Text = login;
             this.txtPassword.Text = password;
             this.txtFirstName.Text = firstName;
             this.txtLastName.Text = lastName;
-            this.cmbRole.SelectedIndex = roleId;
+            this.cmbRole.SelectedIndex = roleType == RolesInfo.Admin ? 0 : 1;
         }
-
         private void BtnAddNewUser_Click(object sender, RoutedEventArgs e)
         {
             FillOrClearFields();
             isNewUser = true;
         }
-
         private bool IsLoginReserved(string login)
         {
-            return context.Users.Any(u => u.Login == login);
+            return db.IsUserExist(login);
         }
-
         private bool IsAllFieldsFilled()
         {
             bool login = !string.IsNullOrWhiteSpace(this.txtUsername.Text);
-            bool password = !string.IsNullOrWhiteSpace(this.txtPassword.Text);
+            //bool password = !string.IsNullOrWhiteSpace(this.txtPassword.Text);
             bool firstName = !string.IsNullOrWhiteSpace(this.txtFirstName.Text);
             bool lastName = !string.IsNullOrWhiteSpace(this.txtLastName.Text);
             bool role = this.cmbRole.SelectedIndex != -1;
 
-            return (login && password && firstName && lastName && role);
+            return (login && firstName && lastName && role);
         }
-
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             if(!IsAllFieldsFilled())
             {
-                MessageBox.Show("Для збереження користувача необхідно заповнити всі поля і обрати його роль", "Пусті поля", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+                MessageBox.Show(
+                    "Для збереження користувача необхідно заповнити всі поля і обрати його роль",
+                    "Пусті поля",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Asterisk);
                 return;
             }
 
+            // obj that save into DB
             var newUser = new User
             {
-                Login = this.txtUsername.Text,
-                Password = this.txtPassword.Text,
                 FirstName = this.txtFirstName.Text,
                 LastName = this.txtLastName.Text,
-                Role = context.Roles.SingleOrDefault(role => role.Id == this.cmbRole.SelectedIndex + 1)
+                Login = this.txtUsername.Text,
+                PasswordSalt = this.db.GetSalt(),
+                Role = this.cmbRole.SelectedIndex == 0 ? this.db.GetRole("admin") : this.db.GetRole("user")
             };
+            newUser.PasswordHash = this.db.GetSaltedHash(this.txtPassword.Text, newUser.PasswordSalt);
             
             if (isNewUser)
             {
@@ -111,8 +123,7 @@ namespace tuc2.Windows.AdminControls
                     MessageBox.Show(errorText, errorHeader, MessageBoxButton.OK, MessageBoxImage.Asterisk);
                     return;
                 }
-                context.Users.Add(newUser);
-                context.SaveChanges();
+                this.db.Users.Insert(newUser);
                 usersList.Add(newUser.Login);
                 isNewUser = false;
                 SelectedIndexValue = usersList.IndexOf(newUser.Login);
@@ -121,17 +132,20 @@ namespace tuc2.Windows.AdminControls
             {
                 var selectedUserIndex = this.ListViewUsers.SelectedIndex;
                 var selectedUserLogin = usersList[selectedUserIndex];
-                var selectedUser = context.Users.SingleOrDefault(u => u.Login == selectedUserLogin);
+                var selectedUser = this.db.GetUser(selectedUserLogin);
                 if (selectedUser == null)
                     return;
 
                 selectedUser.Login = newUser.Login;
-                selectedUser.Password = newUser.Password;
+                if(!string.IsNullOrWhiteSpace(this.txtPassword.Text))
+                {
+                    selectedUser.PasswordHash = this.db.GetSaltedHash(this.txtPassword.Text, selectedUser.PasswordSalt);
+                }
                 selectedUser.FirstName = newUser.FirstName;
                 selectedUser.LastName = newUser.LastName;
                 selectedUser.Role = newUser.Role;
 
-                context.SaveChanges();
+                this.db.Users.Update(selectedUser);
                 usersList[selectedUserIndex] = selectedUser.Login;
                 SelectedIndexValue = selectedUserIndex;
             }
@@ -141,14 +155,12 @@ namespace tuc2.Windows.AdminControls
             var messageHeader = "Успішне збереження користувача";
             MessageBox.Show(messageText, messageHeader, MessageBoxButton.OK, MessageBoxImage.Information);
         }
-
         private void BtnRemove_Click(object sender, RoutedEventArgs e)
         {
             var oldIndex = this.ListViewUsers.SelectedIndex;
             var username = usersList[oldIndex];
-            var user = context.Users.SingleOrDefault(usr => usr.Login == username);
-            context.Users.Remove(user);
-            context.SaveChanges();
+            var user = this.db.GetUser(username);
+            this.db.Users.Delete(user.Id);
             this.ListViewUsers.SelectedIndex = oldIndex - 1;
             usersList.Remove(username);
 

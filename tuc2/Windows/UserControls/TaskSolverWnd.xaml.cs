@@ -16,6 +16,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using tuc2.DataTypes;
+using tuc2.ViewModels;
+using Tuc2DDL;
 
 namespace tuc2.Windows.UserControls
 {
@@ -24,16 +26,17 @@ namespace tuc2.Windows.UserControls
     /// </summary>
     public partial class TaskSolverWnd : UserControl
     {
-        private ApplicationContext context;
+        private DbContext db;
         private ObservableCollection<string> taskList;
         private string currentDirectory;
 
+        public ObservableCollection<TestViewModel> Examples { get; set; }
         public int SelectedIndexValue { get; set; }
 
         public TaskSolverWnd()
         {
-            context = new ApplicationContext();
-            taskList = new ObservableCollection<string>(context.Tasks.Select(t => t.Name));
+            this.db = new DbContext();
+            taskList = new ObservableCollection<string>(db.Exercises.FindAll().Select(x => x.Name));
             if (taskList.Count == 0)
                 SelectedIndexValue = -1;
             else
@@ -46,20 +49,19 @@ namespace tuc2.Windows.UserControls
             this.ListViewTasks.ItemsSource = taskList;
         }
 
-        private void FillOrClearFields(string taskName = "", string description = "", string inputSample = "", string outputSample = "", string codeFile = "")
+        private void FillOrClearFields(string taskName = "", string description = "", List<TestViewModel> examples = null, string codeFile = "")
         {
             this.lbTaskName.Text = taskName;
             this.txtTaskDescription.Text = description;
-            this.txtInputSample.Text = inputSample;
-            this.txtOutputSample.Text = outputSample;
+            this.Examples = new ObservableCollection<TestViewModel>(examples);
             this.txtCodeFile.Text = codeFile;
         }
         private void ListViewTasks_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SelectedIndexValue = this.ListViewTasks.SelectedIndex;
             var taskName = taskList[SelectedIndexValue];
-            var task = context.Tasks.SingleOrDefault(t => t.Name == taskName);
-            FillOrClearFields(task.Name, task.Description, task.InputExample, task.OutputExample);
+            var task = this.db.GetExercise(taskName);
+            FillOrClearFields(task.Name, task.Description, DataMapper.Map(task.Examples));
             this.lbTaskNumber.Text = $"{SelectedIndexValue + 1} / {taskList.Count}";
             btnNextTask.IsEnabled = !(SelectedIndexValue + 1 == taskList.Count);
             btnPreviusTask.IsEnabled = !(SelectedIndexValue == 0);
@@ -105,7 +107,7 @@ namespace tuc2.Windows.UserControls
         private void BtnCheckSolution_Click(object sender, RoutedEventArgs e)
         {
             var taskName = taskList[SelectedIndexValue];
-            var task = context.Tasks.SingleOrDefault(t => t.Name == taskName);
+            var task = this.db.GetExercise(taskName);
             if (task == null)
                 return;
 

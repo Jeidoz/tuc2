@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using tuc2.Entities;
+using tuc2.ViewModels;
 using tuc2.Windows.AdminControls;
 
 namespace tuc2.Windows
@@ -22,9 +22,9 @@ namespace tuc2.Windows
     /// </summary>
     public partial class AdminMenuWnd : UserControl
     {
-        public User LoginedUser { get; set; }
+        public UserViewModel LoginedUser { get; set; }
 
-        public AdminMenuWnd(User loginedUser)
+        public AdminMenuWnd(UserViewModel loginedUser)
         {
             InitializeComponent();
             LoginedUser = loginedUser;

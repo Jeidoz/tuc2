@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Entity;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -15,7 +14,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using tuc2.DataTypes;
-using tuc2.Entities;
+using tuc2.ViewModels;
+using Tuc2DDL;
+using Tuc2DDL.Entities;
 
 namespace tuc2.Windows.UserControls
 {
@@ -38,8 +39,8 @@ namespace tuc2.Windows.UserControls
             }
         }
 
-        private ApplicationContext context;
-        private TestTask task;
+        private DbContext db;
+        private Exercise task;
         private List<Test> tests;
         private FileInfo codeFileInfo;
         private bool isCompiled;
@@ -52,8 +53,8 @@ namespace tuc2.Windows.UserControls
 
         public TestingWnd(int taskId, string codeFile)
         {
-            context = new ApplicationContext();
-            task = context.Tasks.Include(t => t.Tests).Single(t => t.Id == taskId);
+            this.db = new DbContext();
+            task = this.db.GetExercise(taskId);
             tests = task.Tests;
 
             var currentDir = Directory.GetCurrentDirectory();

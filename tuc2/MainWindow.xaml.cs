@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using tuc2.Entities;
+using tuc2.ViewModels;
 using tuc2.Windows;
 
 namespace tuc2
@@ -23,34 +22,28 @@ namespace tuc2
     /// </summary>
     public partial class MainWindow : Window
     {
-        AuthorizeWnd loginWnd;
         public MainWindow()
         {
             InitializeComponent();
-            loginWnd = new AuthorizeWnd();
-            gridMainWindow.Children.Add(loginWnd);
+            ShowLoginWindow();
         }
 
         public void ShowLoginWindow()
         {
             gridMainWindow.Children.Clear();
-            loginWnd = new AuthorizeWnd();
-            gridMainWindow.Children.Add(loginWnd);
+            gridMainWindow.Children.Add(new AuthorizeWnd());
         }
-
-        public void HideLoginWindow(UserRoles userRole, User loginedUser)
+        public void HideLoginWindow(UserRoles userRole, UserViewModel loginedUser)
         {
-            gridMainWindow.Children.Remove(loginWnd);
-            if (userRole == UserRoles.User)
-            {
-                var userInterface = new UserMenuWnd(loginedUser);
-                this.gridMainWindow.Children.Add(userInterface);
-            }
+            gridMainWindow.Children.Clear();
+
+            UserControl nextWnd;
+            if (userRole == UserRoles.Admin)
+                nextWnd = new AdminMenuWnd(loginedUser);
             else
-            {
-                var userInterface = new AdminMenuWnd(loginedUser);
-                this.gridMainWindow.Children.Add(userInterface);
-            }
+                nextWnd = new UserMenuWnd(loginedUser);
+
+            gridMainWindow.Children.Add(nextWnd);
         }
     }
 }

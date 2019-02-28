@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LiteDB;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using tuc2.ViewModels;
+using Tuc2DDL;
 
 namespace tuc2.Windows
 {
@@ -20,11 +23,12 @@ namespace tuc2.Windows
     /// </summary>
     public partial class AuthorizeWnd : UserControl
     {
-        private readonly ApplicationContext dbContext;
+        private DbContext db;
+
         public AuthorizeWnd()
         {
+            this.db = new DbContext(); 
             InitializeComponent();
-            dbContext = new ApplicationContext();
         }
 
         private void BtnLogin_Click(object sender, RoutedEventArgs e)
@@ -32,10 +36,12 @@ namespace tuc2.Windows
             var username = this.txtUsername.Text;
             var password = this.txtPassword.Password;
             var authUserRole = UserRoles.None;
-            var user = dbContext.Users.SingleOrDefault(u => u.Login == username && u.Password == password);
-            if (user != null)
+
+            var loginedUser = this.db.GetUser(username);
+
+            if (this.db.IsUserExist(username) && this.db.IsUserPasswordCorrect(username, password))
             {
-                if (user.Role.Id == RolesInfo.AdminId)
+                if (loginedUser.Role.Type == "admin")
                     authUserRole = UserRoles.Admin;
                 else
                     authUserRole = UserRoles.User;
@@ -47,8 +53,18 @@ namespace tuc2.Windows
                 MessageBox.Show(boxText, boxHeader, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
+
             MainWindow mainWindow = (MainWindow)Window.GetWindow(this);
-            mainWindow.HideLoginWindow(authUserRole, user);
+            var loginedUserViewModel = new UserViewModel
+            {
+                Id = loginedUser.Id,
+                Login = loginedUser.Login,
+                Password = password,
+                FirstName = loginedUser.FirstName,
+                LastName = loginedUser.LastName,
+                RoleType = authUserRole == UserRoles.Admin ? RolesInfo.Admin : RolesInfo.User
+            };
+            mainWindow.HideLoginWindow(authUserRole, loginedUserViewModel);
         }
 
         private void BtnClose_Click(object sender, RoutedEventArgs e)
