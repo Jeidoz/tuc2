@@ -60,7 +60,7 @@
                             HorizontalAlignment="Right" VerticalAlignment="Top"
                             Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
                             Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FF31577E"
-                            Click="ButtonOpenMenu_Click">
+                            Click="ButtonCloseMenu_Click">
                         <materialDesign:PackIcon Kind="ArrowLeft" Width="25" Height="25"/>
                     </Button>
                 </Grid>
@@ -77,24 +77,6 @@
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Lock" Height="25" Width="25" Margin="10"/>
                             <TextBlock Text="Завдання" VerticalAlignment="Center" Margin="20 10"/>
-                        </StackPanel>
-                    </ListViewItem>
-                    <ListViewItem x:Name="ItemImport" Height="60">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="ArrowDownBold" Height="25" Width="25" Margin="10"/>
-                            <TextBlock Text="Імпорт" VerticalAlignment="Center"  Margin="20 10"/>
-                        </StackPanel>
-                    </ListViewItem>
-                    <ListViewItem x:Name="ItemExport" Height="60">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="ArrowUpBold" Height="25" Width="25" Margin="10"/>
-                            <TextBlock Text="Експорт" VerticalAlignment="Center"  Margin="20 10"/>
-                        </StackPanel>
-                    </ListViewItem>
-                    <ListViewItem x:Name="ItemSettings" Height="60">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Settings" Height="25" Width="25" Margin="10"/>
-                            <TextBlock Text="Налаштування" VerticalAlignment="Center"  Margin="20 10"/>
                         </StackPanel>
                     </ListViewItem>
                     <ListViewItem x:Name="ItemLogout" Height="60">
