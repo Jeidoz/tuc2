@@ -35,7 +35,7 @@ namespace tuc2.Windows.UserControls
 
         public TaskSolverWnd()
         {
-            this.db = new DbContext();
+            this.db = WpfHelper.Database;
             taskList = new ObservableCollection<string>(db.Exercises.FindAll().Select(x => x.Name));
             if (taskList.Count == 0)
                 SelectedIndexValue = -1;
@@ -98,6 +98,12 @@ namespace tuc2.Windows.UserControls
         private void ClearCodeFilesFolder()
         {
             var dir = Path.Combine(currentDirectory, "Codes");
+
+            if(!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
             var dirInfo = new DirectoryInfo(dir);
             foreach (FileInfo file in dirInfo.EnumerateFiles())
             {

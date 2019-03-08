@@ -45,7 +45,7 @@ namespace tuc2.Windows.AdminControls
         {
             DataContext = this;
             this.taskName = testName;
-            this.db = new DbContext();
+            this.db = WpfHelper.Database;
             TestsList = new ObservableCollection<TestViewModel>();
             var testTask = this.db.GetExercise(testName);
             foreach(var test in testTask.Tests)

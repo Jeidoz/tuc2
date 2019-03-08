@@ -37,7 +37,7 @@ namespace tuc2.Windows.AdminControls
         // Перевірка на наявність доданих тестів
         public TasksCrudWnd()
         {
-            this.db = new DbContext();
+            this.db = WpfHelper.Database;
             taskList = new ObservableCollection<string>(db.Exercises.FindAll().Select(x => x.Name));
             if (taskList.Count == 0)
                 isNewTask = true;

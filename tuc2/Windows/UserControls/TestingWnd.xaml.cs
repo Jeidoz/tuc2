@@ -53,7 +53,7 @@ namespace tuc2.Windows.UserControls
 
         public TestingWnd(int taskId, string codeFile)
         {
-            this.db = new DbContext();
+            this.db = WpfHelper.Database;
             task = this.db.GetExercise(taskId);
             tests = task.Tests;
 
@@ -79,24 +79,7 @@ namespace tuc2.Windows.UserControls
             ActionList.Add(newAction);
             return newAction;
         }
-        private void ProcessCompilation()
-        {
-            
-            var compilationResult = Compile();
-            if (compilationResult.IsCompiled)
-            {
-                progressBarStatus.Value = 10;
-                AddNewAction("Компіляція завершена.");
-                isCompiled = true;
-            }
-            else
-            {
-                progressBarStatus.Foreground = Brushes.MediumVioletRed;
-                AddNewAction("Помилка компіляції!");
-                AddNewAction($"Дані про помилку:\n{compilationResult.Errors}");
-                isCompiled = false;
-            }
-        }
+
         private CompilationResult Compile()
         {
             string extension = codeFileInfo.Extension;
@@ -147,6 +130,23 @@ namespace tuc2.Windows.UserControls
                 errors = string.Empty;
             process.WaitForExit();
             return new CompilationResult(errors);
+        }
+        private void ProcessCompilation()
+        { 
+            var compilationResult = Compile();
+            if (compilationResult.IsCompiled)
+            {
+                progressBarStatus.Value = 10;
+                AddNewAction("Компіляція завершена.");
+                isCompiled = true;
+            }
+            else
+            {
+                progressBarStatus.Foreground = Brushes.MediumVioletRed;
+                AddNewAction("Помилка компіляції!");
+                AddNewAction($"Дані про помилку:\n{compilationResult.Errors}");
+                isCompiled = false;
+            }
         }
         private RuntimeResult Execute(string input)
         {
@@ -205,18 +205,6 @@ namespace tuc2.Windows.UserControls
             var runtimeResult = Execute(test.InputData);
             return (runtimeResult.Output.StartsWith(test.OutputData));
         }
-        private void ChangeRowColor(TestingAction action, Brush color)
-        {
-            var dgIndex = ActionList.Count - 1;
-            var lastRow = (DataGridRow)this.DataGridDetails.ItemContainerGenerator.ContainerFromIndex(dgIndex);
-            if (lastRow == null)
-            {
-                this.DataGridDetails.UpdateLayout();
-                this.DataGridDetails.ScrollIntoView(action);
-                lastRow = (DataGridRow)this.DataGridDetails.ItemContainerGenerator.ContainerFromIndex(dgIndex);
-            }
-            lastRow.Foreground = color;
-        }
         private void ProcessTesting()
         {
             TestingAction action;
@@ -247,6 +235,18 @@ namespace tuc2.Windows.UserControls
             this.progressBarStatus.Value = 100;
         }
 
+        private void ChangeRowColor(TestingAction action, Brush color)
+        {
+            var dgIndex = ActionList.Count - 1;
+            var lastRow = (DataGridRow)this.DataGridDetails.ItemContainerGenerator.ContainerFromIndex(dgIndex);
+            if (lastRow == null)
+            {
+                this.DataGridDetails.UpdateLayout();
+                this.DataGridDetails.ScrollIntoView(action);
+                lastRow = (DataGridRow)this.DataGridDetails.ItemContainerGenerator.ContainerFromIndex(dgIndex);
+            }
+            lastRow.Foreground = color;
+        }
         private void Window_ContentRendered(object sender, EventArgs e)
         {
             progressBarStatus.Value = 5;

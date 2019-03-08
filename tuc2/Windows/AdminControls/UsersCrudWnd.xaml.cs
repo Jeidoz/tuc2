@@ -33,7 +33,7 @@ namespace tuc2.Windows.AdminControls
 
         public UsersCrudWnd(UserViewModel usr)
         {
-            db = new DbContext();
+            db = WpfHelper.Database;
             loginedUser = usr;
             var users = db.Users.FindAll();
             usersList = new ObservableCollection<string>();
@@ -113,7 +113,7 @@ namespace tuc2.Windows.AdminControls
                 Role = this.cmbRole.SelectedIndex == 0 ? this.db.GetRole("admin") : this.db.GetRole("user")
             };
             newUser.PasswordHash = this.db.GetSaltedHash(this.txtPassword.Text, newUser.PasswordSalt);
-            
+
             if (isNewUser)
             {
                 if (IsLoginReserved(newUser.Login))
