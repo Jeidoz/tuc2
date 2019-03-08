@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using tuc2.ViewModels;
 using tuc2.Windows;
+using Tuc2DDL;
 
 namespace tuc2
 {
@@ -30,20 +31,20 @@ namespace tuc2
 
         public void ShowLoginWindow()
         {
-            gridMainWindow.Children.Clear();
-            gridMainWindow.Children.Add(new AuthorizeWnd());
+            gridMain.Children.Clear();
+            gridMain.Children.Add(new AuthorizeWnd());
         }
-        public void HideLoginWindow(UserRoles userRole, UserViewModel loginedUser)
+        public void HideLoginWindow(UserViewModel loginedUser)
         {
-            gridMainWindow.Children.Clear();
+            gridMain.Children.Clear();
 
             UserControl nextWnd;
-            if (userRole == UserRoles.Admin)
+            if (loginedUser.RoleType == RolesInfo.Admin)
                 nextWnd = new AdminMenuWnd(loginedUser);
             else
                 nextWnd = new UserMenuWnd(loginedUser);
 
-            gridMainWindow.Children.Add(nextWnd);
+            gridMain.Children.Add(nextWnd);
         }
     }
 }

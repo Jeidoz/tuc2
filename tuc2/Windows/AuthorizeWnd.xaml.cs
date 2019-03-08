@@ -27,33 +27,32 @@ namespace tuc2.Windows
 
         public AuthorizeWnd()
         {
-            this.db = new DbContext(); 
+            this.db = WpfHelper.Database;
             InitializeComponent();
+        }
+
+        private bool IsAuthorizationFailed(string username, string password)
+        {
+            bool isUsernameExist = this.db.IsUserExist(username);
+            bool isPasswordCorrect = this.db.IsUserPasswordCorrect(username, password);
+            return !(isUsernameExist && isPasswordCorrect);
         }
 
         private void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
             var username = this.txtUsername.Text;
             var password = this.txtPassword.Password;
-            var authUserRole = UserRoles.None;
-
             var loginedUser = this.db.GetUser(username);
 
-            if (this.db.IsUserExist(username) && this.db.IsUserPasswordCorrect(username, password))
-            {
-                if (loginedUser.Role.Type == "admin")
-                    authUserRole = UserRoles.Admin;
-                else
-                    authUserRole = UserRoles.User;
-            }
-            else
+            if (IsAuthorizationFailed(username, password))
             {
                 var boxHeader = "Некоректні дані для входу";
                 var boxText = "Ви ввели неправильний логін/пароль!";
                 MessageBox.Show(boxText, boxHeader, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
-            }
+            }   
 
+            
             MainWindow mainWindow = (MainWindow)Window.GetWindow(this);
             var loginedUserViewModel = new UserViewModel
             {
@@ -62,11 +61,10 @@ namespace tuc2.Windows
                 Password = password,
                 FirstName = loginedUser.FirstName,
                 LastName = loginedUser.LastName,
-                RoleType = authUserRole == UserRoles.Admin ? RolesInfo.Admin : RolesInfo.User
+                RoleType = loginedUser.Role.Type
             };
-            mainWindow.HideLoginWindow(authUserRole, loginedUserViewModel);
+            mainWindow.HideLoginWindow(loginedUserViewModel);
         }
-
         private void BtnClose_Click(object sender, RoutedEventArgs e)
         {
             var thisWindow = Window.GetWindow(this);

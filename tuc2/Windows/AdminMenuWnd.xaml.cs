@@ -26,15 +26,15 @@ namespace tuc2.Windows
 
         public AdminMenuWnd(UserViewModel loginedUser)
         {
-            InitializeComponent();
             LoginedUser = loginedUser;
+
+            InitializeComponent();
             InitializeDefaultWindow();
         }
 
         private void InitializeDefaultWindow()
         {
-            UserControl usc = new UsersCrudWnd(LoginedUser);
-            GridMain.Children.Clear();
+            var usc = new UsersCrudWnd(LoginedUser);
             GridMain.Children.Add(usc);
         }
 
@@ -43,36 +43,33 @@ namespace tuc2.Windows
             ButtonCloseMenu.Visibility = Visibility.Visible;
             ButtonOpenMenu.Visibility = Visibility.Collapsed;
         }
-
         private void ButtonCloseMenu_Click(object sender, RoutedEventArgs e)
         {
             ButtonCloseMenu.Visibility = Visibility.Collapsed;
             ButtonOpenMenu.Visibility = Visibility.Visible;
         }
-
         private void ListViewMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             UserControl usc = null;
             GridMain.Children.Clear();
-            ListViewItem item = ((ListView)sender).SelectedItem as ListViewItem;
+            var item = ((ListView)sender).SelectedItem as ListViewItem;
 
             switch (item.Name)
             {
                 case "ItemLogout":
-                    MainWindow wnd = (MainWindow)Window.GetWindow(this);
+                    var wnd = WpfHelper.GetMainWindow(this);
                     wnd.ShowLoginWindow();
-                    break;
+                    return;
                 case "ItemUsers":
                     usc = new UsersCrudWnd(LoginedUser);
-                    GridMain.Children.Add(usc);
                     break;
                 case "ItemTasks":
                     usc = new TasksCrudWnd();
-                    GridMain.Children.Add(usc);
                     break;
                 default:
                     break;
             }
+            GridMain.Children.Add(usc);
         }
     }
 }
