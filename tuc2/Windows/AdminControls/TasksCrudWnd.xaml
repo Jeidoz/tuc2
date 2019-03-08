@@ -75,22 +75,6 @@
                             <RowDefinition/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <!--<TextBox x:Name="txtInputSample" 
-                                 Grid.Column="0" Grid.Row="0"
-                                 Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
-                                 Margin="5, 7, 5, 0"
-                                 Height="140px"
-                                 AcceptsReturn="True"
-                                 FontSize="16" Foreground="Black"
-                                 materialDesign:HintAssist.Hint="Приклади вхідних даних"/>
-                        <TextBox x:Name="txtOutputSample" 
-                                 Grid.Column="1" Grid.Row="0"
-                                 Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
-                                 Margin="5, 7, 5, 0"
-                                 Height="140px"
-                                 AcceptsReturn="True"
-                                 FontSize="16" Foreground="Black"
-                                 materialDesign:HintAssist.Hint="Приклади вихідних даних"/>-->
                         <DataGrid x:Name="dataGridExamples"
                                   Grid.ColumnSpan="2"
                                   Margin="5 5"
