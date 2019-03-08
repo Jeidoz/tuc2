@@ -16,7 +16,6 @@ namespace tuc2.DataTypes
             IsCompiled = false;
             Errors = string.Empty;
         }
-
         public CompilationResult(string errors)
         {
             if (string.IsNullOrWhiteSpace(errors))
