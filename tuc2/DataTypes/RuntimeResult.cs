@@ -22,7 +22,7 @@ namespace tuc2.DataTypes
         {
             Errors = errors;
             Output = output;
-            IsExecuted = false;
+            IsExecuted = string.IsNullOrWhiteSpace(errors);
         }
 
         public string PrintTraceback()
