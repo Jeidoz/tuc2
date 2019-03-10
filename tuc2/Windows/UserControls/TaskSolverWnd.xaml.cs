@@ -53,7 +53,11 @@ namespace tuc2.Windows.UserControls
         {
             this.lbTaskName.Text = taskName;
             this.txtTaskDescription.Text = description;
-            this.Examples = new ObservableCollection<TestViewModel>(examples);
+            if (examples == null || examples.Count == 0)
+                this.Examples.Clear();
+            else
+                this.Examples = new ObservableCollection<TestViewModel>(examples);
+            this.dataGridExamples.ItemsSource = this.Examples;
             this.txtCodeFile.Text = codeFile;
         }
         private void ListViewTasks_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -84,7 +88,8 @@ namespace tuc2.Windows.UserControls
                 Title = "Оберіть файл із кодом програми для тестування",
                 Multiselect = false
             };
-            if (openFileDlg.ShowDialog() == true)
+            var result = openFileDlg.ShowDialog();
+            if (result.HasValue && result.Value)
             {
                 var fileName = new FileInfo(openFileDlg.FileName);
                 var codesDir = Path.Combine(currentDirectory, "Codes");
@@ -92,8 +97,9 @@ namespace tuc2.Windows.UserControls
                 ClearCodeFilesFolder();
                 File.Copy(fileName.FullName, distPath);
                 this.txtCodeFile.Text = fileName.Name;
-            }
-            this.btnCheckSolution.IsEnabled = true;
+
+                this.btnCheckSolution.IsEnabled = true;
+            } 
         }
         private void ClearCodeFilesFolder()
         {

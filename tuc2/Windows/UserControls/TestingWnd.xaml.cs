@@ -113,8 +113,8 @@ namespace tuc2.Windows.UserControls
             string fileName = codeFileInfo.FullName;
             if (extension == ".cpp" || extension == ".c")
             {
-                var exeName = fileName.Replace("." + fileName.Split('.').Last(), "");
-                startInfo.Arguments = $" \"{fileName}\" -o \"{exeName}.exe\"";
+                var exeName = fileName.Replace(codeFileInfo.Extension, ".exe");
+                startInfo.Arguments = $" \"{fileName}\" -o \"{exeName}\"";
             }
             else
             {
@@ -211,8 +211,7 @@ namespace tuc2.Windows.UserControls
             double multiplier = 80 / tests.Count;
             foreach (var test in tests)
             {
-                var isTestPassed = IsTestPassed(test);
-                if (isTestPassed)
+                if (IsTestPassed(test))
                 {
                     action = AddNewAction($"[Пройдений] Тест №{testNumber}");
                     ChangeRowColor(action, Brushes.Green);

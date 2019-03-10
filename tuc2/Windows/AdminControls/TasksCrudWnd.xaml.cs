@@ -33,8 +33,6 @@ namespace tuc2.Windows.AdminControls
         public int SelectedIndexValue { get; set; }
         public ObservableCollection<TestViewModel> Examples { get; set; }
 
-        // TO DO
-        // Перевірка на наявність доданих тестів
         public TasksCrudWnd()
         {
             this.db = WpfHelper.Database;
@@ -49,13 +47,15 @@ namespace tuc2.Windows.AdminControls
             this.ListViewTasks.ItemsSource = taskList;
         }
 
-        //TO-DO 
-        //TEXTBOX INTO DATAGRID
         private void FillOrClearFields(string taskName = "", string description = "", List<TestViewModel> examples = null)
         {
             this.txtTaskName.Text = taskName;
             this.txtTaskDescription.Text = description;
-            this.Examples = new ObservableCollection<TestViewModel>(examples);
+            if (examples == null || examples.Count == 0)
+                this.Examples.Clear();
+            else
+                this.Examples = new ObservableCollection<TestViewModel>(examples);
+            this.dataGridExamples.ItemsSource = this.Examples;
         }
         private void ListViewTasks_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -97,6 +97,20 @@ namespace tuc2.Windows.AdminControls
             var messageHeader = "Успішне видалення завдання";
             MessageBox.Show(messageText, messageHeader, MessageBoxButton.OK, MessageBoxImage.Information);
         }
+        private void UpdateExampleTests()
+        {
+            foreach (var test in Examples)
+            {
+                var searchResult = this.db.Tests.FindById(test.Id);
+                if (searchResult == null)
+                {
+                    var dbRecord = DataMapper.Map(test);
+                    test.Id = this.db.Tests.Insert(dbRecord);
+                }
+                else
+                    this.db.Tests.Update(searchResult);
+            }
+        }
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             if (!IsAllFieldsFilled())
@@ -105,7 +119,6 @@ namespace tuc2.Windows.AdminControls
                 return;
             }
 
-            //TO-DO FILES
             var newTask = new Exercise()
             {
                 Name = this.txtTaskName.Text,
@@ -138,6 +151,7 @@ namespace tuc2.Windows.AdminControls
 
                 selectedExercise.Name = newTask.Name;
                 selectedExercise.Description = newTask.Description;
+                UpdateExampleTests();
                 selectedExercise.Examples = DataMapper.Map(this.Examples);
 
                 this.db.Exercises.Update(selectedExercise);

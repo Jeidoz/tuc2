@@ -48,9 +48,12 @@ namespace tuc2.Windows.AdminControls
             this.db = WpfHelper.Database;
             TestsList = new ObservableCollection<TestViewModel>();
             var testTask = this.db.GetExercise(testName);
-            foreach(var test in testTask.Tests)
+            if (testTask.Tests != null)
             {
-                TestsList.Add(DataMapper.Map(test));
+                foreach (var test in testTask.Tests)
+                {
+                    TestsList.Add(DataMapper.Map(test));
+                }
             }
 
             InitializeComponent();
@@ -64,19 +67,26 @@ namespace tuc2.Windows.AdminControls
             }
         }
 
+        private void UpdateTests()
+        {
+            foreach (var test in TestsList)
+            {
+                var searchResult = this.db.Tests.FindById(test.Id);
+                if (searchResult == null)
+                {
+                    var dbRecord = DataMapper.Map(test);
+                    test.Id = this.db.Tests.Insert(dbRecord);
+                }
+                else
+                    this.db.Tests.Update(searchResult);
+            }
+        }
+
         private void BtnSaveTests_Click(object sender, RoutedEventArgs e)
         {
             var testTask = this.db.GetExercise(taskName);
-            foreach (var test in testTask.Tests)
-            {
-                this.db.Tests.Delete(Query.EQ("Id", test.Id));
-            }
-            List<Test> newTests = new List<Test>();
-            foreach(var test in TestsList)
-            {
-                newTests.Add(DataMapper.Map(test));
-            }
-            testTask.Tests = newTests;
+            UpdateTests();
+            testTask.Tests = DataMapper.Map(TestsList);
             this.db.Exercises.Update(testTask);
 
             MessageBox.Show("Тести були успішно збережені у БД", "Тести успішно збережені", MessageBoxButton.OK, MessageBoxImage.Information);
