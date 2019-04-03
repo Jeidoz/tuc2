@@ -72,13 +72,14 @@ namespace tuc2.Windows.AdminControls
             foreach (var test in TestsList)
             {
                 var searchResult = this.db.Tests.FindById(test.Id);
+                var mappedTest = DataMapper.Map(test);
                 if (searchResult == null)
                 {
-                    var dbRecord = DataMapper.Map(test);
+                    var dbRecord = mappedTest;
                     test.Id = this.db.Tests.Insert(dbRecord);
                 }
                 else
-                    this.db.Tests.Update(searchResult);
+                    this.db.Tests.Update(mappedTest);
             }
         }
 

@@ -102,13 +102,14 @@ namespace tuc2.Windows.AdminControls
             foreach (var test in Examples)
             {
                 var searchResult = this.db.Tests.FindById(test.Id);
+                var mappedTest = DataMapper.Map(test);
                 if (searchResult == null)
                 {
-                    var dbRecord = DataMapper.Map(test);
+                    var dbRecord = mappedTest;
                     test.Id = this.db.Tests.Insert(dbRecord);
                 }
                 else
-                    this.db.Tests.Update(searchResult);
+                    this.db.Tests.Update(mappedTest);
             }
         }
         private void BtnSave_Click(object sender, RoutedEventArgs e)
@@ -137,6 +138,8 @@ namespace tuc2.Windows.AdminControls
                     MessageBox.Show(errorText, errorHeader, MessageBoxButton.OK, MessageBoxImage.Asterisk);
                     return;
                 }
+                UpdateExampleTests();
+                newTask.Examples = DataMapper.Map(this.Examples);
                 this.db.Exercises.Insert(newTask);
                 taskList.Add(newTask.Name);
                 isNewTask = false;
