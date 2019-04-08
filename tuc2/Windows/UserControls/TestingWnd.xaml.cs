@@ -3,18 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using tuc2.DataTypes;
-using tuc2.ViewModels;
 using Tuc2DDL;
 using Tuc2DDL.Entities;
 
@@ -39,28 +32,40 @@ namespace tuc2.Windows.UserControls
             }
         }
 
-        private DbContext db;
-        private Exercise task;
-        private List<Test> tests;
-        private FileInfo codeFileInfo;
+        private readonly DbContext db;
+        private readonly Exercise task;
+        private readonly List<Test> tests;
+        private readonly FileInfo codeFileInfo;
         private bool isCompiled;
         private bool isTestRunPassed;
         private int testNumber;
         private int passedTests;
         private int failedTests;
+        private int processTimeLimit;
 
         public ObservableCollection<TestingAction> ActionList { get; set; }
 
         public TestingWnd(int taskId, string codeFile)
         {
-            this.db = WpfHelper.Database;
-            task = this.db.GetExercise(taskId);
+            processTimeLimit = (int)TimeSpan.FromSeconds(3).TotalMilliseconds;
+            db = WpfHelper.Database;
+            task = db.GetExercise(taskId);
             tests = task.Tests;
+            codeFileInfo = new FileInfo(GetDistFilePath(codeFile));
 
+            InitializeActionList();
+
+            DataContext = this;
+            InitializeComponent();
+        }
+
+        private string GetDistFilePath(string fileName)
+        {
             var currentDir = Directory.GetCurrentDirectory();
-            var distPath = Path.Combine(currentDir, "Codes", codeFile);
-            codeFileInfo = new FileInfo(distPath);
-
+            return Path.Combine(currentDir, "Codes", fileName);
+        }
+        private void InitializeActionList()
+        {
             ActionList = new ObservableCollection<TestingAction>()
             {
                 new TestingAction("Ініціалізація змінних..."),
@@ -68,9 +73,6 @@ namespace tuc2.Windows.UserControls
                 new TestingAction($"Підготовка до тестування завдання із назвою \"{task.Name}\" завершена."),
                 new TestingAction("Компіляція коду...")
             };
-
-            DataContext = this;
-            InitializeComponent();
         }
 
         private TestingAction AddNewAction(string action)
@@ -80,7 +82,7 @@ namespace tuc2.Windows.UserControls
             return newAction;
         }
 
-        private CompilationResult Compile()
+        private async Task<CompilationResult> Compile()
         {
             string extension = codeFileInfo.Extension;
             string languageCompiler = string.Empty;
@@ -122,18 +124,24 @@ namespace tuc2.Windows.UserControls
             }
 
             var process = Process.Start(startInfo);
-            var errors = process.StandardError.ReadToEnd();
-            var output = process.StandardOutput.ReadToEnd();
+            var errors = await process.StandardError.ReadToEndAsync();
+            var output = await process.StandardOutput.ReadToEndAsync();
             if (string.IsNullOrWhiteSpace(errors))
+            {
                 errors = output;
+            }
+
             if (errors.Contains("compiled"))
+            {
                 errors = string.Empty;
+            }
+
             process.WaitForExit();
             return new CompilationResult(errors);
         }
-        private void ProcessCompilation()
-        { 
-            var compilationResult = Compile();
+        private async Task ProcessCompilation()
+        {
+            var compilationResult = await Compile();
             if (compilationResult.IsCompiled)
             {
                 progressBarStatus.Value = 10;
@@ -148,7 +156,46 @@ namespace tuc2.Windows.UserControls
                 isCompiled = false;
             }
         }
-        private RuntimeResult Execute(string input)
+        private Task<RuntimeResult> RunProcessAsync(ProcessStartInfo startInfo, string input)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                using (Process process = Process.Start(startInfo))
+                {
+                    process.StandardInput.WriteLine(input);
+                    var processResult = true;
+                    var firstEntry = true;
+                    do
+                    {
+                        process.Refresh();
+                        if (firstEntry)
+                        {
+                            firstEntry = false;
+                            continue;
+                        }
+                        if (!process.HasExited)
+                        {
+                            processResult = false;
+                            break;
+                        }
+                    } while (!process.WaitForExit(processTimeLimit));
+
+                    var errors = string.Empty;
+                    if (processResult == false)
+                    {
+                        process.Kill();
+                        errors = "Перевищений ліміт виконання (3 сек.).";
+                    }
+                    else
+                        errors = process.StandardError.ReadToEnd();
+                    var output = process.StandardOutput.ReadToEnd();
+
+
+                    return new RuntimeResult(output, errors);
+                }
+            });
+        }
+        private async Task<RuntimeResult> Execute(string input)
         {
             if (!isCompiled)
             {
@@ -173,18 +220,13 @@ namespace tuc2.Windows.UserControls
                 var exeFileName = codeFileInfo.FullName.Replace(codeFileInfo.Extension, ".exe");
                 startInfo.FileName = exeFileName;
             }
-            var process = Process.Start(startInfo);
-            process.StandardInput.WriteLine(input);
-            var output = process.StandardOutput.ReadToEnd();
-            var errors = process.StandardError.ReadToEnd();
-            process.WaitForExit();
-        
-            return new RuntimeResult(output, errors);
+            return await RunProcessAsync(startInfo, input);
         }
-        private void ProcessTestRun()
+        private async Task ProcessTestRun()
         {
             AddNewAction("Пробний запуск виконуючого файлу..");
-            var runtimeResult = Execute(tests[0].InputData);
+            var runtimeResult = await Execute(tests[0].InputData);
+
             if (runtimeResult.IsExecuted)
             {
                 progressBarStatus.Value = 20;
@@ -199,19 +241,19 @@ namespace tuc2.Windows.UserControls
                 isTestRunPassed = false;
             }
         }
-        private bool IsTestPassed(Test test)
+        private async Task<bool> IsTestPassed(Test test)
         {
             AddNewAction($"Запуск тесту №{testNumber} із {tests.Count}");
-            var runtimeResult = Execute(test.InputData);
+            var runtimeResult = await Execute(test.InputData);
             return (runtimeResult.Output.StartsWith(test.OutputData));
         }
-        private void ProcessTesting()
+        private async Task ProcessTesting()
         {
             TestingAction action;
             double multiplier = 80 / tests.Count;
             foreach (var test in tests)
             {
-                if (IsTestPassed(test))
+                if (await IsTestPassed(test))
                 {
                     action = AddNewAction($"[Пройдений] Тест №{testNumber}");
                     ChangeRowColor(action, Brushes.Green);
@@ -224,45 +266,45 @@ namespace tuc2.Windows.UserControls
                     failedTests++;
                 }
                 testNumber++;
-                this.progressBarStatus.Value += multiplier;
+                progressBarStatus.Value += multiplier;
             }
             action = AddNewAction($"Провалено {failedTests} із {tests.Count}");
             ChangeRowColor(action, (failedTests == 0 ? Brushes.DarkGreen : Brushes.Red));
             action = AddNewAction($"Пройдено {passedTests} із {tests.Count}");
             ChangeRowColor(action, Brushes.DarkGreen);
-            this.DataGridDetails.ScrollIntoView(action);
-            this.progressBarStatus.Value = 100;
+            DataGridDetails.ScrollIntoView(action);
+            progressBarStatus.Value = 100;
         }
 
         private void ChangeRowColor(TestingAction action, Brush color)
         {
             var dgIndex = ActionList.Count - 1;
-            var lastRow = (DataGridRow)this.DataGridDetails.ItemContainerGenerator.ContainerFromIndex(dgIndex);
+            var lastRow = (DataGridRow)DataGridDetails.ItemContainerGenerator.ContainerFromIndex(dgIndex);
             if (lastRow == null)
             {
-                this.DataGridDetails.UpdateLayout();
-                this.DataGridDetails.ScrollIntoView(action);
-                lastRow = (DataGridRow)this.DataGridDetails.ItemContainerGenerator.ContainerFromIndex(dgIndex);
+                DataGridDetails.UpdateLayout();
+                DataGridDetails.ScrollIntoView(action);
+                lastRow = (DataGridRow)DataGridDetails.ItemContainerGenerator.ContainerFromIndex(dgIndex);
             }
             lastRow.Foreground = color;
         }
-        private void Window_ContentRendered(object sender, EventArgs e)
+        private async void Window_ContentRendered(object sender, EventArgs e)
         {
             progressBarStatus.Value = 5;
-
-            ProcessCompilation();
+            await ProcessCompilation();
             if (isCompiled)
             {
-                ProcessTestRun();
+                await ProcessTestRun();
                 if (isTestRunPassed)
                 {
                     AddNewAction("Запуск тестування...");
                     testNumber = 1;
                     failedTests = 0;
                     passedTests = 0;
-                    ProcessTesting();
+                    await ProcessTesting();
                 }
             }
         }
+
     }
 }

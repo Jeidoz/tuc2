@@ -52,7 +52,7 @@
                              DockPanel.Dock="Top"
                              Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
                              Margin="10, 7, 5, 0"
-                             Height="100"
+                             MinHeight="160"
                              AcceptsReturn="True"
                              TextWrapping="Wrap"
                              FontSize="18" Foreground="Black"

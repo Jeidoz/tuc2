@@ -46,7 +46,7 @@
                              DockPanel.Dock="Top"
                              Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
                              Margin="10, 7, 5, 0"
-                             MinHeight="140px"
+                             MinHeight="160"
                              AcceptsReturn="True"
                              TextWrapping="Wrap"
                              IsReadOnly="True"
