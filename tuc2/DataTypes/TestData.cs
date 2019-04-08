@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace tuc2.DataTypes
 {
@@ -16,7 +13,6 @@ namespace tuc2.DataTypes
             Input = new List<string>();
             Output = string.Empty;
         }
-
         public TestData(string[] input, string output)
         {
             Input = input.ToList();

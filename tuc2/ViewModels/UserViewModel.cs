@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace tuc2.Entities
+namespace tuc2.ViewModels
 {
-    public class User : INotifyPropertyChanged
+    public class UserViewModel : INotifyPropertyChanged
     {
         private string login;
         private string password;
@@ -53,9 +47,8 @@ namespace tuc2.Entities
                 OnPropertyChanged("LastName");
             }
         }
-        
-        [Required]
-        public virtual Role Role { get; set; }
+
+        public string RoleType { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName]string prop = "")

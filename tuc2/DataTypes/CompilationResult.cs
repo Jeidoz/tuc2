@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace tuc2.DataTypes
 {
@@ -16,7 +12,6 @@ namespace tuc2.DataTypes
             IsCompiled = false;
             Errors = string.Empty;
         }
-
         public CompilationResult(string errors)
         {
             if (string.IsNullOrWhiteSpace(errors))

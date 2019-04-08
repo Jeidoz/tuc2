@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace tuc2.DataTypes
 {
@@ -12,25 +8,17 @@ namespace tuc2.DataTypes
         public string Output { get; set; }
         public string Errors { get; set; }
 
-        public RuntimeResult()
+        public RuntimeResult(string output)
         {
             Errors = string.Empty;
+            Output = output;
+            IsExecuted = true;
         }
-
-        public RuntimeResult(string output, string errors)
+        public RuntimeResult(string output, string errors = null)
         {
-            if (string.IsNullOrWhiteSpace(errors))
-            {
-                Errors = string.Empty;
-                Output = output;
-                IsExecuted = true;
-            }
-            else
-            {
-                Errors = errors;
-                Output = output;
-                IsExecuted = false;
-            }
+            Errors = errors;
+            Output = output;
+            IsExecuted = string.IsNullOrWhiteSpace(errors);
         }
 
         public string PrintTraceback()
@@ -44,7 +32,6 @@ namespace tuc2.DataTypes
             Console.WriteLine(Errors);
             return Errors;
         }
-
         public void PrintOutput()
         {
             if (string.IsNullOrWhiteSpace(Errors))

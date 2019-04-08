@@ -53,7 +53,7 @@
                              Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
                              Margin="10, 7, 10, 0"
                              FontSize="18" Foreground="Black"
-                             materialDesign:HintAssist.Hint="Пароль"/>
+                             materialDesign:HintAssist.Hint="Новий пароль"/>
                     <ComboBox x:Name="cmbRole"
                               DockPanel.Dock="Top"
                               Margin="30, 7, 30, 0" Foreground="Black"

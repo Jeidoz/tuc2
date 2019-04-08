@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace tuc2.Entities
+namespace tuc2.ViewModels
 {
     public class TestViewModel : INotifyPropertyChanged
     {
@@ -14,6 +9,7 @@ namespace tuc2.Entities
         private string inputData;
         private string outputData;
 
+        public int Id { get; set; }
         public bool IsSelected
         {
             get { return isSelected; }

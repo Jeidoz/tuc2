@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using tuc2.Entities;
+using tuc2.ViewModels;
 using tuc2.Windows.UserControls;
 
 namespace tuc2.Windows
@@ -22,9 +10,9 @@ namespace tuc2.Windows
     /// </summary>
     public partial class UserMenuWnd : UserControl
     {
-        public User LoginedUser { get; set; }
+        public UserViewModel LoginedUser { get; set; }
 
-        public UserMenuWnd(User user)
+        public UserMenuWnd(UserViewModel user)
         {
             LoginedUser = user;
             InitializeComponent();
@@ -34,19 +22,19 @@ namespace tuc2.Windows
         private void InitializeDefaultWindow()
         {
             UserControl usc = new TaskSolverWnd();
-            GridMain.Children.Clear();
+             
             GridMain.Children.Add(usc);
         }
 
         private void ButtonOpenMenu_Click(object sender, RoutedEventArgs e)
         {
             ButtonCloseMenu.Visibility = Visibility.Visible;
-            ButtonOpenMenu.Visibility = Visibility.Collapsed;
+            ButtonOpenMenu.Visibility = Visibility.Hidden;
         }
 
         private void ButtonCloseMenu_Click(object sender, RoutedEventArgs e)
         {
-            ButtonCloseMenu.Visibility = Visibility.Collapsed;
+            ButtonCloseMenu.Visibility = Visibility.Hidden;
             ButtonOpenMenu.Visibility = Visibility.Visible;
         }
 

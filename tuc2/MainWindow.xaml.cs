@@ -1,19 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using tuc2.Entities;
+using tuc2.ViewModels;
 using tuc2.Windows;
 
 namespace tuc2
@@ -23,34 +10,28 @@ namespace tuc2
     /// </summary>
     public partial class MainWindow : Window
     {
-        AuthorizeWnd loginWnd;
         public MainWindow()
         {
             InitializeComponent();
-            loginWnd = new AuthorizeWnd();
-            gridMainWindow.Children.Add(loginWnd);
+            ShowLoginWindow();
         }
 
         public void ShowLoginWindow()
         {
-            gridMainWindow.Children.Clear();
-            loginWnd = new AuthorizeWnd();
-            gridMainWindow.Children.Add(loginWnd);
+            gridMain.Children.Clear();
+            gridMain.Children.Add(new AuthorizeWnd());
         }
-
-        public void HideLoginWindow(UserRoles userRole, User loginedUser)
+        public void HideLoginWindow(UserViewModel loginedUser)
         {
-            gridMainWindow.Children.Remove(loginWnd);
-            if (userRole == UserRoles.User)
-            {
-                var userInterface = new UserMenuWnd(loginedUser);
-                this.gridMainWindow.Children.Add(userInterface);
-            }
+            gridMain.Children.Clear();
+
+            UserControl nextWnd;
+            if (loginedUser.RoleType == RolesInfo.Admin)
+                nextWnd = new AdminMenuWnd(loginedUser);
             else
-            {
-                var userInterface = new AdminMenuWnd(loginedUser);
-                this.gridMainWindow.Children.Add(userInterface);
-            }
+                nextWnd = new UserMenuWnd(loginedUser);
+
+            gridMain.Children.Add(nextWnd);
         }
     }
 }

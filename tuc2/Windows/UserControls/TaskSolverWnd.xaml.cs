@@ -1,21 +1,12 @@
 ﻿using Microsoft.Win32;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using tuc2.DataTypes;
+using tuc2.ViewModels;
+using Tuc2DDL;
 
 namespace tuc2.Windows.UserControls
 {
@@ -24,16 +15,17 @@ namespace tuc2.Windows.UserControls
     /// </summary>
     public partial class TaskSolverWnd : UserControl
     {
-        private ApplicationContext context;
+        private DbContext db;
         private ObservableCollection<string> taskList;
         private string currentDirectory;
 
+        public ObservableCollection<TestViewModel> Examples { get; set; }
         public int SelectedIndexValue { get; set; }
 
         public TaskSolverWnd()
         {
-            context = new ApplicationContext();
-            taskList = new ObservableCollection<string>(context.Tasks.Select(t => t.Name));
+            this.db = WpfHelper.Database;
+            taskList = new ObservableCollection<string>(db.Exercises.FindAll().Select(x => x.Name));
             if (taskList.Count == 0)
                 SelectedIndexValue = -1;
             else
@@ -46,20 +38,23 @@ namespace tuc2.Windows.UserControls
             this.ListViewTasks.ItemsSource = taskList;
         }
 
-        private void FillOrClearFields(string taskName = "", string description = "", string inputSample = "", string outputSample = "", string codeFile = "")
+        private void FillOrClearFields(string taskName = "", string description = "", List<TestViewModel> examples = null, string codeFile = "")
         {
             this.lbTaskName.Text = taskName;
             this.txtTaskDescription.Text = description;
-            this.txtInputSample.Text = inputSample;
-            this.txtOutputSample.Text = outputSample;
+            if (examples == null || examples.Count == 0)
+                this.Examples.Clear();
+            else
+                this.Examples = new ObservableCollection<TestViewModel>(examples);
+            this.dataGridExamples.ItemsSource = this.Examples;
             this.txtCodeFile.Text = codeFile;
         }
         private void ListViewTasks_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SelectedIndexValue = this.ListViewTasks.SelectedIndex;
             var taskName = taskList[SelectedIndexValue];
-            var task = context.Tasks.SingleOrDefault(t => t.Name == taskName);
-            FillOrClearFields(task.Name, task.Description, task.InputExample, task.OutputExample);
+            var task = this.db.GetExercise(taskName);
+            FillOrClearFields(task.Name, task.Description, DataMapper.Map(task.Examples));
             this.lbTaskNumber.Text = $"{SelectedIndexValue + 1} / {taskList.Count}";
             btnNextTask.IsEnabled = !(SelectedIndexValue + 1 == taskList.Count);
             btnPreviusTask.IsEnabled = !(SelectedIndexValue == 0);
@@ -82,7 +77,8 @@ namespace tuc2.Windows.UserControls
                 Title = "Оберіть файл із кодом програми для тестування",
                 Multiselect = false
             };
-            if (openFileDlg.ShowDialog() == true)
+            var result = openFileDlg.ShowDialog();
+            if (result.HasValue && result.Value)
             {
                 var fileName = new FileInfo(openFileDlg.FileName);
                 var codesDir = Path.Combine(currentDirectory, "Codes");
@@ -90,12 +86,19 @@ namespace tuc2.Windows.UserControls
                 ClearCodeFilesFolder();
                 File.Copy(fileName.FullName, distPath);
                 this.txtCodeFile.Text = fileName.Name;
-            }
-            this.btnCheckSolution.IsEnabled = true;
+
+                this.btnCheckSolution.IsEnabled = true;
+            } 
         }
         private void ClearCodeFilesFolder()
         {
             var dir = Path.Combine(currentDirectory, "Codes");
+
+            if(!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
             var dirInfo = new DirectoryInfo(dir);
             foreach (FileInfo file in dirInfo.EnumerateFiles())
             {
@@ -105,7 +108,7 @@ namespace tuc2.Windows.UserControls
         private void BtnCheckSolution_Click(object sender, RoutedEventArgs e)
         {
             var taskName = taskList[SelectedIndexValue];
-            var task = context.Tasks.SingleOrDefault(t => t.Name == taskName);
+            var task = this.db.GetExercise(taskName);
             if (task == null)
                 return;
 

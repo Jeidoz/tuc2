@@ -7,7 +7,9 @@
         mc:Ignorable="d"
         Title="Тестування рішення"
         MinHeight="325" MinWidth="450"
-        Height="475" Width="750" WindowStartupLocation="CenterOwner" ContentRendered="Window_ContentRendered">
+        Height="475" Width="750" 
+        WindowStartupLocation="CenterScreen" 
+        ContentRendered="Window_ContentRendered">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50px"/>
@@ -38,7 +40,8 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Action}"
                                     Header="Опис тестування"
-                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />
+                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" 
+                                    IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
