@@ -18,6 +18,8 @@ namespace tuc2.Windows
 
             InitializeComponent();
             InitializeDefaultWindow();
+
+            this.txtLoginedUsername.Text = LoginedUser.Login;
         }
 
         private void InitializeDefaultWindow()
@@ -30,11 +32,13 @@ namespace tuc2.Windows
         {
             ButtonCloseMenu.Visibility = Visibility.Visible;
             ButtonOpenMenu.Visibility = Visibility.Collapsed;
+            ButtonUserInfo.Visibility = Visibility.Visible;
         }
         private void ButtonCloseMenu_Click(object sender, RoutedEventArgs e)
         {
             ButtonCloseMenu.Visibility = Visibility.Collapsed;
             ButtonOpenMenu.Visibility = Visibility.Visible;
+            ButtonUserInfo.Visibility = Visibility.Collapsed;
         }
         private void ListViewMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
